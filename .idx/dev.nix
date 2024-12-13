@@ -23,7 +23,9 @@
     gcc
   ];
   # Sets environment variables in the workspace
-  env = {};
+  env = {
+    PATH = [ "/home/user/learningnix/cli/rust/" "/home/user/learningnix/cli/" ];
+  };
   idx = {
     # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
     extensions = [

@@ -17,7 +17,7 @@ struct Cli {
     /// Path to the file to search
     path: std::path::PathBuf,
 
-    /// Case-sensitive
+    /// Search should be case-sensitive
     #[ arg( short, default_value_t = false ) ]
     case_sensitive: bool,
 }
@@ -66,7 +66,8 @@ fn main() -> Result<()> {
         println!( "{}", line );
     };
 
-    println!( "found {} lines.", out.len() );
+    let out_text = format!( "found {} lines.", out.len() );
+    println!( "{}", colored( 150, 200, 255, &out_text ) );
 
     Ok(())
 }
