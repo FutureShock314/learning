@@ -4,6 +4,10 @@ use anyhow::{ Context, Result };
 use clap::Parser;
 use indicatif::ProgressBar;
 
+fn colored(r: i32, g: i32, b: i32, text: &str) -> String {
+    return format!("\x1B[38;2;{};{};{}m{}\x1B[0m", r, g, b, text);
+}
+
 /// Search for a pattern in lines of a file, and output lines that contain it.
 #[derive(Parser)]
 struct Cli {
@@ -43,14 +47,22 @@ fn main() -> Result<()> {
     }
     progress_bar.finish();
 
-    // println!("pattern: {:?}\npath: {:?}", args.pattern, args.path); // debug line
-    // println!( "{}", out.join(", ") );
-    println!( "{:?}", out );
-    for line in &out {
-        let index = line.to_lowercase().find( &args.pattern );
+    // println!("pattern: {:?}\npath: {:?}", args.pattern, args.path); // debug
+    // println!( "{}", out.join(", ") ); // alt output
+    // println!( "{:?}", out ); // debug
+    for line in &mut out {
+        let idx: usize = line.to_lowercase().find( &args.pattern ).unwrap().try_into().unwrap();
+        // let idx_usize: u64 = idx.try_into().unwrap();
 
-        line.replace_range( index..Some(args.pattern.len()), "" );
+        let ptrn_len: usize = args.pattern.len().try_into().unwrap();
+        let idx2: usize = idx + ptrn_len;
 
+        let original_pattern_occurrance = &line[ idx..idx2 ];
+
+        // line.replace_range( idx..idx2, &colored( 0, 255, 200, "    omg guys it's here    " ) ); // debug test
+        line.replace_range( idx..idx2, &colored( 0, 255, 200, original_pattern_occurrance ) );
+
+        // println!( "{}", idx ); // debug
         println!( "{}", line );
     };
 
