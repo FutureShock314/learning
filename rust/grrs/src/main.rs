@@ -4,11 +4,11 @@ use anyhow::{ Context, Result };
 use clap::Parser;
 use indicatif::ProgressBar;
 
-fn colored(r: i32, g: i32, b: i32, text: &str) -> String {
-    return format!("\x1B[38;2;{};{};{}m{}\x1B[0m", r, g, b, text);
+fn colored(color: &Color, text: &str) -> String {
+    return format!("\x1B[38;2;{};{};{}m{}\x1B[0m", color.r, color.g, color.b, text);
 }
 
-fn pattern_color( mut text: String, pattern: &str, color: Color ) -> String {
+fn pattern_color( mut text: String, pattern: &str, color: &Color ) -> String {
     let idx: usize = text.to_lowercase().find( pattern ).unwrap().try_into().unwrap();
 
     let ptrn_len: usize = pattern.len().try_into().unwrap();
@@ -16,8 +16,10 @@ fn pattern_color( mut text: String, pattern: &str, color: Color ) -> String {
 
     let original_pattern_occurrance = &text[ idx..idx2 ];
 
-    // line.replace_range( idx..idx2, &colored( 0, 255, 200, "    omg guys it's here    " ) ); // debug test
-    text.replace_range( idx..idx2, &colored( color.r, color.g, color.b, original_pattern_occurrance ) );
+    text.replace_range(
+        idx..idx2,
+        &colored( color, original_pattern_occurrance )
+    );
 
     text
 }
@@ -55,13 +57,18 @@ fn main() -> Result<()> {
     
     let progress_bar: ProgressBar = ProgressBar::new( content.lines().count().try_into().unwrap() );
     let mut lines: Vec<String> = vec![];
+    let pattern_hl: Color = Color {
+        r: 0,
+        g: 255,
+        b: 200,
+    };
 
     for line in content.lines() {
         if args.case_sensitive {
             if line.contains( &args.pattern ) {
                 // println!( "{}", line )
                 lines.push( line.to_string() );
-                let line = &pattern_color( line.to_string(), &args.pattern, Color { r: 0, g: 255, b: 200 } );
+                let line = &pattern_color( line.to_string(), &args.pattern, &pattern_hl );
 
                 progress_bar.println( line );
             };
@@ -69,7 +76,7 @@ fn main() -> Result<()> {
             if line.to_lowercase().contains( &args.pattern.to_lowercase() ) {
                 // println!( "{}", line )
                 lines.push( line.to_string() );
-                let line = &pattern_color( line.to_string(), &args.pattern, Color { r: 0, g: 255, b: 200 } );
+                let line = &pattern_color( line.to_string(), &args.pattern, &pattern_hl );
 
                 progress_bar.println( line );
             };
@@ -78,8 +85,14 @@ fn main() -> Result<()> {
     }
     progress_bar.finish_and_clear();
 
+    let out_text_color: Color = Color {
+        r: 150,
+        g: 200,
+        b: 255,
+    };
+
     let out_text = format!( "found {} line(s).", lines.len() );
-    println!( "{}", colored( 150, 200, 255, &out_text ) );
+    println!( "{}", colored( &out_text_color, &out_text ) );
 
     Ok(())
 }
