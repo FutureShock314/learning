@@ -68,17 +68,27 @@ fn main() -> Result<()> {
             if line.contains( &args.pattern ) {
                 // println!( "{}", line )
                 lines.push( line.to_string() );
-                let line = &pattern_color( line.to_string(), &args.pattern, &pattern_hl );
 
-                progress_bar.println( line );
+                if ! args.raw {
+                    let line = &pattern_color( line.to_string(), &args.pattern, &pattern_hl );
+                    progress_bar.println( line );
+                } else {
+                    progress_bar.println( line );
+                };
+
             };
         } else {
             if line.to_lowercase().contains( &args.pattern.to_lowercase() ) {
                 // println!( "{}", line )
                 lines.push( line.to_string() );
-                let line = &pattern_color( line.to_string(), &args.pattern, &pattern_hl );
 
-                progress_bar.println( line );
+                if !args.raw {
+                    let line = &pattern_color( line.to_string(), &args.pattern, &pattern_hl );
+                    progress_bar.println( line );
+                } else {
+                    progress_bar.println( line );
+                };
+
             };
         };
         progress_bar.inc( 1 );
@@ -91,8 +101,10 @@ fn main() -> Result<()> {
         b: 255,
     };
 
-    let out_text = format!( "found {} line(s).", lines.len() );
-    println!( "{}", colored( &out_text_color, &out_text ) );
+    if ! args.raw {
+        let out_text = format!( "found {} line(s).", lines.len() );
+        println!( "{}", colored( &out_text_color, &out_text ) );
+    };
 
     Ok(())
 }
