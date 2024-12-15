@@ -8,8 +8,29 @@ fn colored(r: i32, g: i32, b: i32, text: &str) -> String {
     return format!("\x1B[38;2;{};{};{}m{}\x1B[0m", r, g, b, text);
 }
 
+fn pattern_color( mut text: String, pattern: &str, color: Color ) -> String {
+    let idx: usize = text.to_lowercase().find( pattern ).unwrap().try_into().unwrap();
+
+    let ptrn_len: usize = pattern.len().try_into().unwrap();
+    let idx2: usize = idx + ptrn_len;
+
+    let original_pattern_occurrance = &text[ idx..idx2 ];
+
+    // line.replace_range( idx..idx2, &colored( 0, 255, 200, "    omg guys it's here    " ) ); // debug test
+    text.replace_range( idx..idx2, &colored( color.r, color.g, color.b, original_pattern_occurrance ) );
+
+    text
+}
+
+#[ derive( Debug ) ]
+struct Color {
+    r: i32,
+    g: i32,
+    b: i32,
+}
+
 /// Search for a pattern in lines of a file, and output lines that contain it.
-#[derive(Parser)]
+#[ derive( Parser, Debug ) ]
 struct Cli {
     /// Pattern to look for
     pattern: String,
@@ -18,8 +39,12 @@ struct Cli {
     path: std::path::PathBuf,
 
     /// Search should be case-sensitive
-    #[ arg( short, default_value_t = false ) ]
+    #[ arg( short, long, default_value_t = false ) ]
     case_sensitive: bool,
+
+    /// Search should only return raw, for piping into later processes
+    #[ arg( short, long, default_value_t = false ) ]
+    raw: bool,
 }
 
 fn main() -> Result<()> {
@@ -29,44 +54,31 @@ fn main() -> Result<()> {
         .with_context( || format!( "could not read file: `{}`", args.path.display() ) )?;
     
     let progress_bar: ProgressBar = ProgressBar::new( content.lines().count().try_into().unwrap() );
-    let mut out: Vec<String> = vec![];
+    let mut lines: Vec<String> = vec![];
 
     for line in content.lines() {
         if args.case_sensitive {
             if line.contains( &args.pattern ) {
                 // println!( "{}", line )
-                out.push( line.to_string() )
-            }
+                lines.push( line.to_string() );
+                let line = &pattern_color( line.to_string(), &args.pattern, Color { r: 0, g: 255, b: 200 } );
+
+                progress_bar.println( line );
+            };
         } else {
-            if line.to_lowercase().contains( &args.pattern ) {
+            if line.to_lowercase().contains( &args.pattern.to_lowercase() ) {
                 // println!( "{}", line )
-                out.push( line.to_string() )
-            }
+                lines.push( line.to_string() );
+                let line = &pattern_color( line.to_string(), &args.pattern, Color { r: 0, g: 255, b: 200 } );
+
+                progress_bar.println( line );
+            };
         };
         progress_bar.inc( 1 );
     }
-    progress_bar.finish();
+    progress_bar.finish_and_clear();
 
-    // println!("pattern: {:?}\npath: {:?}", args.pattern, args.path); // debug
-    // println!( "{}", out.join(", ") ); // alt output
-    // println!( "{:?}", out ); // debug
-    for line in &mut out {
-        let idx: usize = line.to_lowercase().find( &args.pattern ).unwrap().try_into().unwrap();
-        // let idx_usize: u64 = idx.try_into().unwrap();
-
-        let ptrn_len: usize = args.pattern.len().try_into().unwrap();
-        let idx2: usize = idx + ptrn_len;
-
-        let original_pattern_occurrance = &line[ idx..idx2 ];
-
-        // line.replace_range( idx..idx2, &colored( 0, 255, 200, "    omg guys it's here    " ) ); // debug test
-        line.replace_range( idx..idx2, &colored( 0, 255, 200, original_pattern_occurrance ) );
-
-        // println!( "{}", idx ); // debug
-        println!( "{}", line );
-    };
-
-    let out_text = format!( "found {} lines.", out.len() );
+    let out_text = format!( "found {} line(s).", lines.len() );
     println!( "{}", colored( 150, 200, 255, &out_text ) );
 
     Ok(())
