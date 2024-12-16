@@ -47,6 +47,10 @@ struct Cli {
     /// Search should only return raw, for piping into later processes
     #[ arg( short, long, default_value_t = false ) ]
     raw: bool,
+
+    /// Show line count at end of output
+    #[ arg( short = 'C', long, default_value_t = false ) ]
+    count: bool,
 }
 
 fn main() -> Result<()> {
@@ -101,7 +105,7 @@ fn main() -> Result<()> {
         b: 255,
     };
 
-    if ! args.raw {
+    if ( ! args.raw ) || args.count {
         let out_text = format!( "found {} line(s).", lines.len() );
         println!( "{}", colored( &out_text_color, &out_text ) );
     };
