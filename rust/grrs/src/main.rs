@@ -44,11 +44,11 @@ struct Cli {
     #[ arg( short, long, default_value_t = false ) ]
     case_sensitive: bool,
 
-    /// Search should only return raw, for piping into later processes
+    /// Search should only return raw lines, for piping into later processes
     #[ arg( short, long, default_value_t = false ) ]
     raw: bool,
 
-    /// Show line count at end of output
+    /// Show line count at end of output ( overrides `raw` )
     #[ arg( short = 'C', long, default_value_t = false ) ]
     count: bool,
 }
