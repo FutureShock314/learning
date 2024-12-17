@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+mb=$1
+lines=$(( mb * 10000 ))
+
+tr -dc 'A-Za-z 0-9' < /dev/urandom | fold -w100 | head -n ${lines} > testfiles/testfile--${mb}mb.txt
