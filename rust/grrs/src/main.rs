@@ -4,32 +4,8 @@ use anyhow::{ Context, Result };
 use clap::Parser;
 use indicatif::ProgressBar;
 
-fn colored(color: &Color, text: &str) -> String {
-    return format!("\x1B[38;2;{};{};{}m{}\x1B[0m", color.r, color.g, color.b, text);
-}
-
-fn pattern_color( mut text: String, pattern: &str, color: &Color ) -> String {
-    let idx: usize = text.to_lowercase().find( pattern ).unwrap().try_into().unwrap();
-
-    let ptrn_len: usize = pattern.len().try_into().unwrap();
-    let idx2: usize = idx + ptrn_len;
-
-    let original_pattern_occurrance = &text[ idx..idx2 ];
-
-    text.replace_range(
-        idx..idx2,
-        &colored( color, original_pattern_occurrance )
-    );
-
-    text
-}
-
-#[ derive( Debug ) ]
-struct Color {
-    r: i32,
-    g: i32,
-    b: i32,
-}
+pub mod color;
+use crate::color::{ colored, pattern_color, Color };
 
 /// Search for a pattern in lines of a file, and output lines that contain it.
 #[ derive( Parser, Debug ) ]
