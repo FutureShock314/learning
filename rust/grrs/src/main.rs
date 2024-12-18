@@ -37,11 +37,7 @@ fn main() -> Result<()> {
     
     let progress_bar: ProgressBar = ProgressBar::new( content.lines().count().try_into().unwrap() );
     let mut lines: Vec<String> = vec![];
-    let pattern_hl: Color = Color {
-        r: 0,
-        g: 255,
-        b: 200,
-    };
+    let pattern_hl: Color = Color::new( 0, 255, 200 );
 
     for line in content.lines() {
         if args.case_sensitive {
@@ -75,11 +71,7 @@ fn main() -> Result<()> {
     }
     progress_bar.finish_and_clear();
 
-    let out_text_color: Color = Color {
-        r: 150,
-        g: 200,
-        b: 255,
-    };
+    let out_text_color: Color = Color::new( 150, 200, 255 );
 
     if ( ! args.raw ) || args.count {
         let out_text = format!( "found {} line(s).", lines.len() );
