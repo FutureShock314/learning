@@ -21,6 +21,8 @@
     rustc
     cargo
     gcc
+    ## Tauri
+    bun
   ];
   # Sets environment variables in the workspace
   env = {
