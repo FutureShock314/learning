@@ -5,7 +5,7 @@ pub mod arg_parser;
 use crate::arg_parser::{ parse_cli_args, read_file };
 
 pub mod color;
-use crate::color::{ colored, pattern_color, Color };
+use crate::color::Color;
 
 pub fn run() -> Result<()>{
     let args = parse_cli_args();
@@ -41,7 +41,7 @@ pub fn check_lines( content: String, pattern: String, raw: bool, case_sensitive:
                 bar.println( &line );
                 found_lines.push( line.to_string() );
             } else {
-                let line = &pattern_color( line.to_string(), &pattern, &pattern_hl );
+                let line = &color::pattern_color( line.to_string(), &pattern, &pattern_hl );
                 bar.println( line );
                 found_lines.push( line.to_string() );
             }
@@ -53,7 +53,7 @@ pub fn check_lines( content: String, pattern: String, raw: bool, case_sensitive:
 
     if ! raw || count {
         let count_text = format!( "found {} line(s).", found_lines.len() );
-        println!( "{}", colored( &count_text_col, &count_text ) );
+        println!( "{}", color::colored( &count_text_col, &count_text ) );
     }
 
     Ok(())
