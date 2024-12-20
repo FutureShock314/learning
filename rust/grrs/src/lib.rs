@@ -30,7 +30,7 @@ pub fn check_lines( content: String, pattern: String, raw: bool, case_sensitive:
     let bar = ProgressBar::new( content.lines().count().try_into().unwrap() );
     let pattern_hl = Color::new( 0, 255, 200 );
     let count_text_col = Color::new( 255, 150, 150 );
-    let mut found_lines: Vec<String> = vec![];
+    let mut found_lines: Vec<String> = Vec::new();
     
     for line in content.lines() {
         let line = match case_sensitive { false => line.to_lowercase(), true => line.to_string() };
