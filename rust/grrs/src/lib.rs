@@ -33,8 +33,8 @@ pub fn check_lines( content: String, pattern: String, raw: bool, case_sensitive:
     let mut found_lines: Vec<String> = vec![];
     
     for line in content.lines() {
-        let line = match case_sensitive { true => line.to_lowercase(), false => line.to_string() };
-        let pattern = match case_sensitive { true => pattern.to_lowercase(), false => pattern.to_string() };
+        let line = match case_sensitive { false => line.to_lowercase(), true => line.to_string() };
+        let pattern = match case_sensitive { false => pattern.to_lowercase(), true => pattern.to_string() };
 
         if line.contains( &pattern ) {
             if raw {
@@ -48,6 +48,8 @@ pub fn check_lines( content: String, pattern: String, raw: bool, case_sensitive:
         }
         bar.inc( 1 )
     }
+
+    bar.finish_and_clear();
 
     if ! raw || count {
         let count_text = format!( "found {} line(s).", found_lines.len() );
