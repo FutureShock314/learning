@@ -9,7 +9,7 @@ pub struct Cli {
 
     /// Path to the file to search
     pub path: std::path::PathBuf,
-
+    
     /// Search should be case-sensitive
     #[ arg( short, long, default_value_t = false ) ]
     pub case_sensitive: bool,

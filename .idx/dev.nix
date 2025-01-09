@@ -21,12 +21,16 @@
     rustc
     cargo
     gcc
+    ## Webscraper
+    openssl
+    pkg-config
     ## Tauri
     bun
   ];
   # Sets environment variables in the workspace
   env = {
     PATH = [ "/home/user/learningnix/cli/rust/" "/home/user/learningnix/cli/" ];
+    PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
   };
   idx = {
     # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
