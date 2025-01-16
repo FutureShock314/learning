@@ -15,7 +15,7 @@ impl Scraper {
             html: String::new(),
             parsed_html: scraper::Html::new_document(),
         };
-        scraper.get_html().unwrap();
+        scraper.parsed_html = scraper.get_html().unwrap();
         scraper
     }
 
@@ -43,7 +43,7 @@ impl Scraper {
         let mut element_vec = vec![];
 
         for el in elements {
-            element_vec.push( el.inner_html() );
+            element_vec.push( el.text().collect::<String>() );
         };
 
         Ok(element_vec)
