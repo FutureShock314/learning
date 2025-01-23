@@ -55,6 +55,8 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
     let current_dt = DateTime::from_timestamp( current_ts, 0 )
         .expect( "Invalid UNIX Timestamp! ( `current_ts` )" );
 
+    println!( "" );
+
     println!( "Current Weather ( {:05} ):", current_dt.format( "%H:%M" ) );
     println!(
         "  {temp:05}°C  |  {weather_desc}",
@@ -95,6 +97,8 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
             ),
         );
     }
+
+    println!( "" );
 
     Ok(())
 }
