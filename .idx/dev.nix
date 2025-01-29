@@ -39,6 +39,11 @@
       "vscodevim.vim"
       "mkhl.direnv"
 
+      ### VSC
+      "catppuccin.catppuccin-vsc"
+      "catppuccin.catppuccin-vsc-icons"
+      "catppuccin.catppuccin-vsc-pack"
+
       ### NIX
       "arrterian.nix-env-selector"
       "bbenoist.Nix"
