@@ -14,6 +14,14 @@ pub fn run() -> Result<(), io::Error> {
     let term_size: TermSize = term::get_term_size()?;
     // println!( "Terminal size: {:?}", term_size );
     println!( "" );
+    
+    //!
+    //! USE
+    //! let paths = std::fs::read_dir("./").unwrap();
+    //! for path in paths {
+    //!     println!( path.unwrap().path().display() )
+    //! }
+    //!
 
     let mut cursor_x = 0;
 
