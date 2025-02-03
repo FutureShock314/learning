@@ -19,6 +19,7 @@
     
     ### RUST
     rustc
+    rustup
     cargo
     gcc
     ## Webscraper
