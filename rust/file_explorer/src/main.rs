@@ -1,6 +1,9 @@
+mod fuzzy_find;
 mod run;
+mod term;
 
 fn main() {
     // Code should probably go here
-    run::run();
+    let result = run::run().unwrap();
+    println!("Result: {:?}", result);
 }

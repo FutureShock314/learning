@@ -1,11 +1,16 @@
 use std::{ 
     self,
-    io::{ self, Write },
+    io::{ self, Write, stdin, },
 };
+use crate::term;
 
-mod term;
-
-pub fn run() -> Result< (), io::Error > {
+pub fn run() -> Result<(), io::Error> {
     // Actual run code goes here
+
+    let stdin = stdin();
+
+    term::enter_raw_mode();
+
+    // term::exit_raw_mode();
     Ok(())
 }
