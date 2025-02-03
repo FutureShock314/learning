@@ -2,17 +2,15 @@ use std::{
     self,
     io::{
         self,
-        Read, Write,
+        Read, /*Write,*/
         stdin, stdout
     },
 };
 use crate::term::{ self, TermSize };
 
 pub fn run() -> Result<(), io::Error> {
-    // Actual run code goes here
-
-    let mut stdin = stdin();
-    let mut stdout = stdout();
+    let stdin = stdin();
+    let stdout = stdout();
     let term_size: TermSize = term::get_term_size()?;
     println!( "Term size: {:?}", term_size );
     println!( "" );
@@ -26,7 +24,7 @@ pub fn run() -> Result<(), io::Error> {
         let c = b as char;
         // println!(  "{}", c );
 
-        term::move_cursor( &stdout, 0, term_size.cols - 2 );
+        term::move_cursor( &stdout, 0, term_size.cols - 2 ).unwrap();
 
         if c.is_control() {
             // all the spaces are to remove any `Char: {}` that was there previously
@@ -35,7 +33,7 @@ pub fn run() -> Result<(), io::Error> {
             print!( "Binary: {0:08b}  ASCII: {0:#3?}  Char: {1:#?}\r", b, c );
         }
 
-        term::move_cursor( &stdout, char_index, term_size.cols );
+        term::move_cursor( &stdout, char_index, term_size.cols ).unwrap();
         if c != 'q' { print!( "{}", c ); }
         char_index += 1;
 
