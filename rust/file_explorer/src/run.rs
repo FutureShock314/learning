@@ -14,14 +14,11 @@ pub fn run() -> Result<(), io::Error> {
     let term_size: TermSize = term::get_term_size()?;
     // println!( "Terminal size: {:?}", term_size );
     println!( "" );
-    
-    //!
-    //! USE
-    //! let paths = std::fs::read_dir("./").unwrap();
-    //! for path in paths {
-    //!     println!( path.unwrap().path().display() )
-    //! }
-    //!
+
+    let paths = std::fs::read_dir("./").unwrap();
+    for path in paths {
+        println!( "{}", path.unwrap().path().display() )
+    }
 
     let mut cursor_x = 0;
 
@@ -44,10 +41,13 @@ pub fn run() -> Result<(), io::Error> {
 
         match byte {
             127 => {
-                cursor_x -= 1;
-                term::move_cursor( &stdout, cursor_x, term_size.cols ).unwrap();
-                write!( stdout,  " " ).unwrap();
-                term::move_cursor( &stdout, cursor_x, term_size.cols ).unwrap(); // so that the cursor doesn't lag a box behind
+                if cursor_x > 0 {
+                    cursor_x -= 1;
+                    term::move_cursor( &stdout, cursor_x, term_size.cols ).unwrap();
+                    write!( stdout,  " " ).unwrap();
+                    // so that the cursor doesn't lag a box behind
+                    term::move_cursor( &stdout, cursor_x, term_size.cols ).unwrap();
+                }
             }
             113 => { // q ==> quit
                 writeln!( stdout, "\n\rQuitting... \r" ).unwrap();
