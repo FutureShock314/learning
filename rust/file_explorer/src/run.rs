@@ -12,7 +12,7 @@ pub fn run() -> Result<(), io::Error> {
     let stdin = stdin();
     let mut stdout = stdout();
     let term_size: TermSize = term::get_term_size()?;
-    println!( "Terminal size: {:?}", term_size );
+    // println!( "Terminal size: {:?}", term_size );
     println!( "" );
 
     let mut cursor_x = 0;
@@ -49,10 +49,10 @@ pub fn run() -> Result<(), io::Error> {
                 write!( stdout, "{}", c ).unwrap();
                 cursor_x += 1;
             }
-        };
+        }
 
         stdout.flush().unwrap();
-    };
+    }
 
     term::exit_raw_mode();
     Ok(())
