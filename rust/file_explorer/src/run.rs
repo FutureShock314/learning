@@ -31,9 +31,9 @@ pub fn run() -> Result<(), io::Error> {
         } else if c != 'q' {
             write!( stdout, "Binary: {0:08b}  ASCII: {0:#3?}  Char: {1:#?}\r", byte, c ).unwrap();
         }
-        
+
         term::move_cursor( &stdout, cursor_x, term_size.cols ).unwrap();
-        
+
         match byte {
             127 => {
                 cursor_x -= 1;
@@ -50,6 +50,7 @@ pub fn run() -> Result<(), io::Error> {
                 cursor_x += 1;
             }
         };
+
         stdout.flush().unwrap();
     };
 
