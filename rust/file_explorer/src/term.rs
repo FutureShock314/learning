@@ -10,8 +10,8 @@ use std::{
 
 #[ derive( Debug ) ]
 pub struct TermSize {
-    pub rows: u16,
     pub cols: u16,
+    pub rows: u16,
 }
 
 /*
@@ -32,6 +32,6 @@ pub fn move_cursor( mut term: &Stdout, x: u16, y: u16 ) -> Result<(), Box<dyn Er
 }
 
 pub fn get_term_size() -> Result<TermSize, io::Error> {
-    let ( rows, cols ) = size()?;
-    Ok(TermSize { rows, cols })
+    let ( cols, rows ) = size()?;
+    Ok(TermSize { cols, rows })
 }
