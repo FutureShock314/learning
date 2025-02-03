@@ -6,13 +6,15 @@ use std::{
         stdin, stdout
     },
 };
-use crate::term;
+use crate::term::{ self, TermSize };
 
 pub fn run() -> Result<(), io::Error> {
     // Actual run code goes here
 
     let mut stdin = stdin();
     let mut stdout = stdout();
+    let term_size: TermSize = term::get_term_size()?;
+    println!( "Term size: {:?}", term_size );
 
     term::enter_raw_mode();
 
@@ -21,7 +23,7 @@ pub fn run() -> Result<(), io::Error> {
         let c = b as char;
         // println!(  "{}", c );
 
-        term::move_cursor( &stdout );
+        term::move_cursor( &stdout, 5, term_size.cols - 2 );
 
         if c.is_control() {
             println!( "Binary: {0:08b}  ASCII: {0:#3?}\r", b );

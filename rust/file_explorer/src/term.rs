@@ -1,9 +1,15 @@
 use crossterm::{ 
-    terminal::{ self, Clear },
+    terminal::{ self, Clear, size },
     ExecutableCommand, execute,
     cursor::{ MoveTo },
 };
-use std::io::{ Stdout, Read };
+use std::io::{ self, Stdout, Read, };
+
+#[ derive( Debug ) ]
+pub struct TermSize {
+    pub rows: u16,
+    pub cols: u16,
+}
 
 // 
 // ALWAYS CALL `exit_raw_mode()` AT END OF CODE
@@ -17,6 +23,11 @@ pub fn exit_raw_mode() {
     terminal::disable_raw_mode().ok();
 }
 
-pub fn move_cursor( mut term: &Stdout, /* x: i32, y: i32 */ ) {
-    execute!( term, MoveTo( 10, 20 ) );
+pub fn move_cursor( mut term: &Stdout, x: u16, y: u16 ) {
+    execute!( term, MoveTo( x, y ) );
+}
+
+pub fn get_term_size() -> Result<TermSize, io::Error> {
+    let ( rows, cols ) = size()?;
+    Ok(TermSize { rows, cols })
 }
