@@ -14,9 +14,9 @@ pub struct TermSize {
     pub cols: u16,
 }
 
-// 
-// ALWAYS CALL `exit_raw_mode()` AT END OF CODE
-//
+/*
+* ALWAYS CALL `exit_raw_mode()` AT END OF CODE
+*/
 
 pub fn enter_raw_mode() {
     terminal::enable_raw_mode().ok();
