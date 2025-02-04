@@ -40,19 +40,68 @@ pub fn _run() -> Result<(), io::Error> {
     let stdin = stdin();
     let mut screen = stdout();
     let term_size: TermSize = term::get_term_size()?;
+
+    let indentation = 5;
     
     term::enter_raw_mode( &screen );
 
-    term::move_cursor( &screen, 5, 0 ).unwrap();
-
+    
     let paths = std::fs::read_dir("./").unwrap();
+    let mut pathCount = 0;
     for path in paths {
-        write!( screen, "{}\n\r", path.unwrap().path().display() ).unwrap();
+        term::move_cursor( &screen, indentation, pathCount ).unwrap();
+        write!( screen, "{}", path.unwrap().path().display() ).unwrap();
+        screen.flush().unwrap();
+        pathCount += 1;
     }
-    screen.flush().unwrap();
+
+    let mut selected_index = 0;
+
+    std::thread::sleep( std::time::Duration::from_millis( 500 ) );
     
     'main: loop {
         break;
+    }
+
+    for byte in stdin.bytes() {
+        let byte = byte?;
+        let c = byte as char;
+
+        term::move_cursor(
+            &screen, indentation,
+            0
+        ).unwrap();
+        screen.flush().unwrap();
+
+        match c {
+            'h' => { todo!() }
+            'j' => {
+                if selected_index < pathCount - 1 {
+                    selected_index += 1;
+                    term::move_cursor(
+                        &screen, indentation,
+                        selected_index.try_into().unwrap()
+                    ).unwrap();
+                }
+            }
+            'k' => {
+                if selected_index > 0 {
+                    selected_index -= 1;
+                    term::move_cursor(
+                        &screen, indentation,
+                        selected_index.try_into().unwrap()
+                    ).unwrap();
+                }
+            }
+            'l' => { todo!() }
+            'q' => {
+                handle::on_quit( &screen, term_size.cols );
+                break;
+            }
+            _ => {
+                handle::on_input( &screen, c );
+            }
+        };
     }
 
     term::exit_raw_mode( &screen );
