@@ -18,16 +18,22 @@ pub struct TermSize {
 // ! ALWAYS CALL `exit_raw_mode()` AT END OF CODE
 // !
 
-pub fn enter_raw_mode() {
+pub fn enter_raw_mode( mut stdout: &Stdout ) {
+    execute!( stdout, terminal::EnterAlternateScreen );
     terminal::enable_raw_mode().ok();
 }
 
-pub fn exit_raw_mode() {
+pub fn exit_raw_mode( mut stdout: &Stdout ) {
+    execute!( stdout, terminal::LeaveAlternateScreen );
     terminal::disable_raw_mode().ok();
 }
 
-pub fn move_cursor( x: u16, y: u16 ) -> Result<(), Box<dyn Error>> {
-    execute!( stdout(), MoveTo( x, y ) )?;
+pub fn clear_screen( stdout: &Stdout ) {
+    //
+}
+
+pub fn move_cursor( mut stdout: &Stdout, x: u16, y: u16 ) -> Result<(), Box<dyn Error>> {
+    execute!( stdout, MoveTo( x, y ) )?;
     Ok(())
 }
 

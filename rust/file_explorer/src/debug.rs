@@ -1,10 +1,8 @@
-use std::io::{ stdout, Write };
+use std::io::{ stdout, Stdout, Write };
 use crate::term;
 
-pub fn check_byte( byte: u8, c: char, loc_x: u16, loc_y: u16 ) {
-    let mut stdout = stdout();
-
-    term::move_cursor( loc_x, loc_y );
+pub fn check_byte( mut stdout: &Stdout, byte: u8, c: char, loc_x: u16, loc_y: u16 ) {
+    term::move_cursor( stdout, loc_x, loc_y );
 
     if c.is_control() {
         // all the spaces are to remove any `Char: {}` that was there previously

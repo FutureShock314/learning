@@ -25,24 +25,26 @@ pub fn run() -> Result<(), io::Error> {
     let mut cursor_x = 2;
     let cols_usize = term_size.cols as usize;
 
-    write!( stdout, "╭{:─<1$}\n", "─", cols_usize - 1 ).unwrap();
-    write!( stdout, "│\n" ).unwrap();
-    write!( stdout, "╰{:─<1$}", "─", cols_usize - 1 ).unwrap();
+    term::enter_raw_mode( &stdout );
+    term::move_cursor( &stdout, 0, 0 );
+
+    write!( stdout, "╭{:─<1$}\n\r", "─", cols_usize - 1 ).unwrap();
+    write!( stdout, "│\n\r" ).unwrap();
+    write!( stdout, "╰{:─<1$}\r", "─", cols_usize - 1 ).unwrap();
     
     stdout.flush().unwrap();
-
-    term::enter_raw_mode();
 
     for byte in stdin.bytes() {
         let byte = byte.unwrap(); // would use char but I can't use it for printing
         let c = byte as char;
         // println!(  "{}", c );
 
-        debug::check_byte( byte, c, 2, term_size.rows - 3 );
+        debug::check_byte( &stdout, byte, c, 2, 0 );
 
-        let cursor_y = term_size.rows - 2;
+        // let cursor_y = term_size.rows - 2;
+        let cursor_y = 1;
 
-        term::move_cursor( cursor_x, cursor_y ).unwrap();
+        term::move_cursor( &stdout, cursor_x, cursor_y ).unwrap();
 
         match byte {
             127 => {
@@ -54,7 +56,7 @@ pub fn run() -> Result<(), io::Error> {
                 //     term::move_cursor( cursor_x, cursor_y ).unwrap();
                 // }
 
-                cursor_x = handle::on_backspace( cursor_x, cursor_y, 2 );
+                cursor_x = handle::on_backspace( &stdout, cursor_x, cursor_y, 2 );
             }
             113 /* q */
             | 27 /* escape */
@@ -72,7 +74,7 @@ pub fn run() -> Result<(), io::Error> {
         stdout.flush().unwrap();
     }
 
-    term::move_cursor( 0, term_size.rows ).unwrap();
-    term::exit_raw_mode();
+    term::move_cursor( &stdout, 0, term_size.rows ).unwrap();
+    term::exit_raw_mode( &stdout );
     Ok(())
 }
