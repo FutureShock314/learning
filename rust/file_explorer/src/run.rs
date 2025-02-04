@@ -10,7 +10,9 @@ use crossterm::execute;
 use crossterm::style::{Print, SetForegroundColor, SetBackgroundColor, ResetColor, Color, Attribute};
 use crate::debug;
 use crate::handle;
-use crate::term::{ self, TermSize };
+use crate::term::{ self, TermSize, PathData, PathType };
+
+use crate::MAIN_SECTION_X;
 
 /// Runs base checks for args etc. before confirming that `_run()` can be used
 pub fn run() -> Result<(), Box<dyn std::error::Error>>{
@@ -43,27 +45,25 @@ pub fn _run() -> Result<(), io::Error> {
     let mut screen = stdout();
     let term_size: TermSize = term::get_term_size()?;
 
-    let indentation = 5;
-    
     term::enter_raw_mode( &screen );
-    term::hide_cursor();
+    term::hide_cursor( &screen );
     
-    let paths: std::fs::ReadDir = std::fs::read_dir("./").unwrap();
+    let dir: std::fs::ReadDir = std::fs::read_dir(".").unwrap();
     let mut path_count = 0;
-    let mut path_vec: Vec<std::path::PathBuf> = vec![];
-    for path in paths {
+    let mut paths: Vec<PathData> = vec![];
+    for path in dir {
         let path = path.unwrap().path();
         
-        term::move_cursor( &screen, indentation, path_count ).unwrap();
+        term::move_cursor( &screen, MAIN_SECTION_X, path_count ).unwrap();
         
         write!( screen, "{:<20}", path.display() ).unwrap();
         screen.flush().unwrap();
         
         path_count += 1;
-        path_vec.push(path);
+        paths.push( PathData::new( path ) );
     }
-        
-    handle::select( &screen, path_vec, indentation, 0 );
+ 
+    handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
 
     let mut selected_index = 0;
 
@@ -77,33 +77,26 @@ pub fn _run() -> Result<(), io::Error> {
         let byte = byte?;
         let c = byte as char;
 
-        term::move_cursor(
-            &screen, indentation,
-            0
-        ).unwrap();
+        term::move_cursor( &screen, MAIN_SECTION_X, 0 ).unwrap();
         screen.flush().unwrap();
 
         match c {
             'h' => { todo!() }
             'j' => {
                 if selected_index < path_count - 1 {
-                    selected_index += 1;
-                    term::move_cursor(
-                        &screen, indentation,
-                        selected_index.try_into().unwrap()
-                    ).unwrap();
-                } else {
-                    term::move_cursor(
-                        &screen, indentation,
-                        path_count - 1
-                    ).unwrap();
+                    // selected_index += 1;
+                    // term::move_cursor(
+                    //     &screen, MAIN_SECTION_X,
+                    //     selected_index.try_into().unwrap()
+                    // ).unwrap();
+                    handle::select_down( &screen, paths, MAIN_SECTION_X, selected_index );
                 }
             }
             'k' => {
                 if selected_index > 0 {
                     selected_index -= 1;
                     term::move_cursor(
-                        &screen, indentation,
+                        &screen, MAIN_SECTION_X,
                         selected_index.try_into().unwrap()
                     ).unwrap();
                 }
@@ -120,5 +113,6 @@ pub fn _run() -> Result<(), io::Error> {
     }
 
     term::exit_raw_mode( &screen );
+    term::show_cursor( &screen );
     Ok(())
 }
