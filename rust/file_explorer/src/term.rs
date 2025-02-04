@@ -4,7 +4,7 @@ use crossterm::{
     cursor::{ MoveTo },
 };
 use std::{
-    io::{ self, Stdout, stdout, /*Read,*/ },
+    io::{ self, Stdout, stdout, /*Read,*/ Write },
     error::Error,
 };
 
@@ -33,7 +33,7 @@ pub fn clear_screen( stdout: &Stdout ) {
 }
 
 pub fn move_cursor( mut stdout: &Stdout, x: u16, y: u16 ) -> Result<(), Box<dyn Error>> {
-    execute!( stdout, MoveTo( x, y ) )?;
+    execute!( stdout, MoveTo( x, y ) );
     Ok(())
 }
 

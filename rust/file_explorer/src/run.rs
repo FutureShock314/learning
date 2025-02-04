@@ -6,6 +6,8 @@ use std::{
         stdin, stdout
     },
 };
+use crossterm::execute;
+use crossterm::style::{Print, SetForegroundColor, SetBackgroundColor, ResetColor, Color, Attribute};
 use crate::debug;
 use crate::handle;
 use crate::term::{ self, TermSize };
@@ -46,14 +48,26 @@ pub fn _run() -> Result<(), io::Error> {
     term::enter_raw_mode( &screen );
 
     
-    let paths = std::fs::read_dir("./").unwrap();
-    let mut pathCount = 0;
+    let paths: std::fs::ReadDir = std::fs::read_dir("./").unwrap();
+    let mut path_count = 0;
+    let mut path_vec: Vec<std::path::PathBuf> = vec![];
     for path in paths {
-        term::move_cursor( &screen, indentation, pathCount ).unwrap();
-        write!( screen, "{}", path.unwrap().path().display() ).unwrap();
+        let path = path.unwrap().path();
+        term::move_cursor( &screen, indentation, path_count ).unwrap();
+        // execute!(
+        //     &screen,
+        //     SetBackgroundColor( Color::Red ),
+        //     SetForegroundColor( Color::Black ),
+        //     Print( format!( "{:<20}", path.unwrap().path().display() ) ),
+        //     ResetColor
+        // ).unwrap();
+        write!( screen, "{:<20}", path.display() ).unwrap();
         screen.flush().unwrap();
-        pathCount += 1;
+        path_count += 1;
+        path_vec.push(path);
     }
+        
+    handle::select( &screen, path_vec, indentation, 0 );
 
     let mut selected_index = 0;
 
@@ -76,11 +90,16 @@ pub fn _run() -> Result<(), io::Error> {
         match c {
             'h' => { todo!() }
             'j' => {
-                if selected_index < pathCount - 1 {
+                if selected_index < path_count - 1 {
                     selected_index += 1;
                     term::move_cursor(
                         &screen, indentation,
                         selected_index.try_into().unwrap()
+                    ).unwrap();
+                } else {
+                    term::move_cursor(
+                        &screen, indentation,
+                        path_count - 1
                     ).unwrap();
                 }
             }

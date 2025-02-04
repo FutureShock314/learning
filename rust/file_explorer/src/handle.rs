@@ -1,4 +1,8 @@
-use crossterm::{ self, };
+use crossterm::{
+    self, execute,
+    terminal::{ Clear, ClearType, }
+};
+use crossterm::style::{Print, SetForegroundColor, SetBackgroundColor, ResetColor, Color, Attribute};
 use std::io::{ stdout, Stdout, Write, };
 use crate::term;
 
@@ -22,4 +26,20 @@ pub fn on_quit( mut stdout: &Stdout, cols: u16 ) {
     write!( stdout, "Quitting..." ).unwrap();
     stdout.flush().unwrap();
     std::thread::sleep( std::time::Duration::from_millis( 500 ) );
+}
+
+pub fn select( mut screen: &Stdout, paths: Vec<std::path::PathBuf>, indentation: u16, index: u16, ) {
+    term::move_cursor( screen, indentation, index ).unwrap();
+    let index = index as usize;
+    execute!( screen, Clear( ClearType::CurrentLine ) );
+    execute!(
+        screen,
+        SetBackgroundColor( Color::Blue ),
+        SetForegroundColor( Color::Black ),
+        Print( format!(
+            "{:<20}",
+            paths[index].display()
+        ) ),
+        ResetColor,
+    );
 }
