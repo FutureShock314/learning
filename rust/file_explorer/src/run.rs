@@ -84,21 +84,14 @@ pub fn _run() -> Result<(), io::Error> {
             'h' => { todo!() }
             'j' => {
                 if selected_index < path_count - 1 {
-                    // selected_index += 1;
-                    // term::move_cursor(
-                    //     &screen, MAIN_SECTION_X,
-                    //     selected_index.try_into().unwrap()
-                    // ).unwrap();
                     handle::select_down( &screen, &paths, MAIN_SECTION_X, selected_index );
+                    selected_index += 1;
                 }
             }
             'k' => {
                 if selected_index > 0 {
+                    handle::select_up( &screen, &paths, MAIN_SECTION_X, selected_index );
                     selected_index -= 1;
-                    term::move_cursor(
-                        &screen, MAIN_SECTION_X,
-                        selected_index.try_into().unwrap()
-                    ).unwrap();
                 }
             }
             'l' => { todo!() }

@@ -26,7 +26,7 @@ pub struct TermSize {
 
 pub struct PathData {
     pub path: std::path::PathBuf,
-    pub type: PathType,
+    pub path_type: PathType,
     pub bg_col: style::Color,
     pub fg_col: style::Color,
 }
@@ -34,20 +34,25 @@ pub struct PathData {
 impl PathData {
     pub fn new( path: std::path::PathBuf ) -> PathData {
         if path.is_dir() {
-            let type = PathType::Dir;
+            let path_type = PathType::Dir;
             let bg_col = style::Color::Blue;
             let fg_col = style::Color::Black;
+            return PathData {
+                path: path,
+                path_type: path_type,
+                bg_col: bg_col,
+                fg_col: fg_col
+            };
         } else {
-            let type = PathType::File;
+            let path_type = PathType::File;
             let bg_col = style::Color::White;
-            let fg_col = style::Color::Black
-        }
-        
-        PathData {
-            path: path,
-            type: type,
-            bg_col: bg_col,
-            fg_col: fg_col
+            let fg_col = style::Color::Black;
+            return PathData {
+                path: path,
+                path_type: path_type,
+                bg_col: bg_col,
+                fg_col: fg_col
+            };
         }
     }
 }

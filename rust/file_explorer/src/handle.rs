@@ -31,7 +31,7 @@ pub fn on_quit( mut screen: &Stdout, cols: u16 ) {
 pub fn select( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, ) {
     term::move_cursor( screen, x, index ).unwrap();
     let index = index as usize;
-    let path = paths[index];
+    let path = &paths[index];
     term::clear_line( screen );
     execute!(
         screen,
@@ -48,7 +48,7 @@ pub fn select( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, )
 pub fn deselect( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, ) {
     term::move_cursor( screen, x, index ).unwrap();
     let index = index as usize;
-    let path = paths[index];
+    let path = &paths[index];
     term::clear_line( screen );
     write!( screen, "{:<20}", path.path.display() ).unwrap();
     screen.flush().unwrap();
