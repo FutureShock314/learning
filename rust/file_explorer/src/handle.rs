@@ -18,8 +18,8 @@ pub fn on_input( stdout: &Stdout, input: char ) {
 }
 
 pub fn on_quit( mut stdout: &Stdout, cols: u16 ) {
-    term::move_cursor( stdout, 0, cols - 1 );
-    write!( stdout, "Quitting..." );
-    stdout.flush();
+    term::move_cursor( stdout, 0, cols - 1 ).unwrap();
+    write!( stdout, "Quitting..." ).unwrap();
+    stdout.flush().unwrap();
     std::thread::sleep( std::time::Duration::from_millis( 500 ) );
 }

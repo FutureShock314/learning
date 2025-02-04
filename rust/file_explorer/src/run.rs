@@ -29,70 +29,32 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>{
             term_size.cols
         );
     } else {
-        _run()?;
+        _run().unwrap();
         return Ok(());
     }
     Err( "Bad terminal size".into() )
 }
 
-/// Actual run functiom, including 
+/// Actual run functiom, including main loop
 pub fn _run() -> Result<(), io::Error> {
     let stdin = stdin();
-    let mut stdout = stdout();
+    let mut screen = stdout();
     let term_size: TermSize = term::get_term_size()?;
-    // println!( "Terminal size: {:?}", term_size );
-    println!( "" );
+    
+    term::enter_raw_mode( &screen );
+
+    term::move_cursor( &screen, 5, 0 ).unwrap();
 
     let paths = std::fs::read_dir("./").unwrap();
     for path in paths {
-        println!( "{}", path.unwrap().path().display() )
+        write!( screen, "{}\n\r", path.unwrap().path().display() ).unwrap();
     }
-
-    let mut cursor_x = 2;
-    let cols_usize = term_size.cols as usize;
-
-    term::enter_raw_mode( &stdout );
-    term::move_cursor( &stdout, 0, 0 );
-
-    write!( stdout, "╭{:─<1$}\n\r", "─", cols_usize - 1 ).unwrap();
-    write!( stdout, "│\n\r" ).unwrap();
-    write!( stdout, "╰{:─<1$}\r", "─", cols_usize - 1 ).unwrap();
+    screen.flush().unwrap();
     
-    stdout.flush().unwrap();
-
-    for byte in stdin.bytes() {
-        let byte = byte.unwrap(); // would use char but I can't use it for printing
-        let c = byte as char;
-        // println!(  "{}", c );
-
-        debug::check_byte( &stdout, byte, c, 2, 0 );
-
-        // let cursor_y = term_size.rows - 2;
-        let cursor_y = 1;
-
-        term::move_cursor( &stdout, cursor_x, cursor_y ).unwrap();
-
-        match byte {
-            127 => {
-                cursor_x = handle::on_backspace( &stdout, cursor_x, cursor_y, 2 );
-            }
-            113 /* q */
-            | 27 /* escape */
-            | 3 /* <C-c> */
-            => {
-                handle::on_quit( &stdout, term_size.cols );
-                break;
-            }
-            _ => {
-                write!( stdout, "{}", c ).unwrap();
-                cursor_x += 1;
-            }
-        }
-
-        stdout.flush().unwrap();
+    'main: loop {
+        break;
     }
 
-    term::move_cursor( &stdout, 0, term_size.rows ).unwrap();
-    term::exit_raw_mode( &stdout );
+    term::exit_raw_mode( &screen );
     Ok(())
 }

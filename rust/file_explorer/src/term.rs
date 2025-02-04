@@ -19,12 +19,12 @@ pub struct TermSize {
 // !
 
 pub fn enter_raw_mode( mut stdout: &Stdout ) {
-    execute!( stdout, terminal::EnterAlternateScreen );
+    execute!( stdout, terminal::EnterAlternateScreen ).ok();
     terminal::enable_raw_mode().ok();
 }
 
 pub fn exit_raw_mode( mut stdout: &Stdout ) {
-    execute!( stdout, terminal::LeaveAlternateScreen );
+    execute!( stdout, terminal::LeaveAlternateScreen ).ok();
     terminal::disable_raw_mode().ok();
 }
 
