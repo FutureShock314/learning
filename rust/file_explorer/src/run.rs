@@ -37,12 +37,6 @@ pub fn run() -> Result<(), io::Error> {
         // println!(  "{}", c );
         term::move_cursor( 2, term_size.rows - 3 ).unwrap();
 
-        if c.is_control() {
-            // all the spaces are to remove any `Char: {}` that was there previously
-            write!( stdout, "Binary: {0:08b}  ASCII: {0:#3?}              \r", byte ).unwrap();
-        } else if c != 'q' {
-            write!( stdout, "Binary: {0:08b}  ASCII: {0:#3?}  Char: {1:#?}\r", byte, c ).unwrap();
-        }
 
         let cursor_y = term_size.rows - 2;
 
