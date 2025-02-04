@@ -6,8 +6,9 @@ use std::{
         stdin, stdout
     },
 };
-use crate::term::{ self, TermSize };
+use crate::debug;
 use crate::input;
+use crate::term::{ self, TermSize };
 
 pub fn run() -> Result<(), io::Error> {
     let stdin = stdin();
@@ -23,9 +24,9 @@ pub fn run() -> Result<(), io::Error> {
 
     let mut cursor_x = 0;
 
-    write!( stdout, "{:-<1$}\n", "-", term_size.cols as usize ).unwrap();
+    write!( stdout, "{:─<1$}\n", "─", term_size.cols as usize ).unwrap();
     write!( stdout, "\n" ).unwrap();
-    write!( stdout, "{:-<1$}", "-", term_size.cols as usize ).unwrap();
+    write!( stdout, "{:─<1$}", "─", term_size.cols as usize ).unwrap();
     
     stdout.flush().unwrap();
 
@@ -35,8 +36,8 @@ pub fn run() -> Result<(), io::Error> {
         let byte = byte.unwrap(); // would use char but I can't use it for printing
         let c = byte as char;
         // println!(  "{}", c );
-        term::move_cursor( 2, term_size.rows - 3 ).unwrap();
 
+        debug::check_byte( byte, c, 2, term_size.rows - 3 );
 
         let cursor_y = term_size.rows - 2;
 
