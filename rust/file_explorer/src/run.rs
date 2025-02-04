@@ -10,7 +10,33 @@ use crate::debug;
 use crate::handle;
 use crate::term::{ self, TermSize };
 
-pub fn run() -> Result<(), io::Error> {
+/// Runs base checks for args etc. before confirming that `_run()` can be used
+pub fn run() -> Result<(), Box<dyn std::error::Error>>{
+    let _args: Vec<_> = std::env::args().collect();
+
+    let term_size = term::get_term_size().unwrap();
+
+    if term_size.rows < 6 {
+        println!( "Terminal too small!" );
+        println!(
+            "    Terminal must have at least 6 rows. ( yours has {} )",
+            term_size.rows
+        );
+    } else if term_size.cols < 30 {
+        println!( "Terminal too small!" );
+        println!(
+            "    Terminal must have at least 30 rows. ( yours has {} )",
+            term_size.cols
+        );
+    } else {
+        _run()?;
+        return Ok(());
+    }
+    Err( "Bad terminal size".into() )
+}
+
+/// Actual run functiom, including 
+pub fn _run() -> Result<(), io::Error> {
     let stdin = stdin();
     let mut stdout = stdout();
     let term_size: TermSize = term::get_term_size()?;
@@ -48,21 +74,13 @@ pub fn run() -> Result<(), io::Error> {
 
         match byte {
             127 => {
-                // if cursor_x > 0 {
-                //     cursor_x -= 1;
-                //     term::move_cursor( cursor_x, cursor_y ).unwrap();
-                //     write!( stdout,  " " ).unwrap();
-                //     // so that the cursor doesn't lag a box behind
-                //     term::move_cursor( cursor_x, cursor_y ).unwrap();
-                // }
-
                 cursor_x = handle::on_backspace( &stdout, cursor_x, cursor_y, 2 );
             }
             113 /* q */
             | 27 /* escape */
             | 3 /* <C-c> */
-            => { // q ==> quit
-                writeln!( stdout, "\n\n\rQuitting... \r" ).unwrap();
+            => {
+                handle::on_quit( &stdout, term_size.cols );
                 break;
             }
             _ => {

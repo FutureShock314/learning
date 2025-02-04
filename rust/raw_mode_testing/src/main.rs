@@ -1,4 +1,5 @@
 mod debug;
+mod fuzzy_find;
 mod handle;
 mod run;
 mod term;

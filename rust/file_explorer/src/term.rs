@@ -37,6 +37,7 @@ pub fn move_cursor( mut stdout: &Stdout, x: u16, y: u16 ) -> Result<(), Box<dyn 
     Ok(())
 }
 
+/// Returns a `TermSize` object containing `{ cols, rows }`
 pub fn get_term_size() -> Result<TermSize, io::Error> {
     let ( cols, rows ) = size()?;
     Ok(TermSize { cols, rows })

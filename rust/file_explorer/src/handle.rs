@@ -13,10 +13,13 @@ pub fn on_backspace( mut stdout: &Stdout, mut cursor_x: u16, cursor_y: u16, min_
     cursor_x
 }
 
-pub fn on_input() {
+pub fn on_input( stdout: &Stdout, input: char ) {
     // ...
 }
 
-pub fn on_quit() {
-    // ...
+pub fn on_quit( mut stdout: &Stdout, cols: u16 ) {
+    term::move_cursor( stdout, 0, cols - 1 );
+    write!( stdout, "Quitting..." );
+    stdout.flush();
+    std::thread::sleep( std::time::Duration::from_millis( 500 ) );
 }
