@@ -46,23 +46,19 @@ pub fn _run() -> Result<(), io::Error> {
     let indentation = 5;
     
     term::enter_raw_mode( &screen );
-
+    term::hide_cursor();
     
     let paths: std::fs::ReadDir = std::fs::read_dir("./").unwrap();
     let mut path_count = 0;
     let mut path_vec: Vec<std::path::PathBuf> = vec![];
     for path in paths {
         let path = path.unwrap().path();
+        
         term::move_cursor( &screen, indentation, path_count ).unwrap();
-        // execute!(
-        //     &screen,
-        //     SetBackgroundColor( Color::Red ),
-        //     SetForegroundColor( Color::Black ),
-        //     Print( format!( "{:<20}", path.unwrap().path().display() ) ),
-        //     ResetColor
-        // ).unwrap();
+        
         write!( screen, "{:<20}", path.display() ).unwrap();
         screen.flush().unwrap();
+        
         path_count += 1;
         path_vec.push(path);
     }

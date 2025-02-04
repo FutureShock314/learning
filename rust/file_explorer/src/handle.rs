@@ -6,13 +6,13 @@ use crossterm::style::{Print, SetForegroundColor, SetBackgroundColor, ResetColor
 use std::io::{ stdout, Stdout, Write, };
 use crate::term;
 
-pub fn on_backspace( mut stdout: &Stdout, mut cursor_x: u16, cursor_y: u16, min_x: u16 ) -> u16 {
+pub fn on_backspace( mut screen: &Stdout, mut cursor_x: u16, cursor_y: u16, min_x: u16 ) -> u16 {
     if cursor_x > min_x {
         cursor_x -= 1;
-        term::move_cursor( stdout, cursor_x, cursor_y ).unwrap();
+        term::move_cursor( screen, cursor_x, cursor_y ).unwrap();
         write!( stdout,  " " ).unwrap();
         // so that the cursor doesn't lag a box behind
-        term::move_cursor( stdout, cursor_x, cursor_y ).unwrap();
+        term::move_cursor( screen, cursor_x, cursor_y ).unwrap();
     }
     cursor_x
 }
@@ -21,9 +21,9 @@ pub fn on_input( stdout: &Stdout, input: char ) {
     // ...
 }
 
-pub fn on_quit( mut stdout: &Stdout, cols: u16 ) {
-    term::move_cursor( stdout, 0, cols - 1 ).unwrap();
-    write!( stdout, "Quitting..." ).unwrap();
+pub fn on_quit( mut screen: &Stdout, cols: u16 ) {
+    term::move_cursor( screen, 0, cols - 1 ).unwrap();
+    write!( screen, "Quitting..." ).unwrap();
     stdout.flush().unwrap();
     std::thread::sleep( std::time::Duration::from_millis( 500 ) );
 }

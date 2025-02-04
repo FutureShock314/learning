@@ -1,7 +1,7 @@
 use crossterm::{ 
     terminal::{ self, /*Clear,*/ size },
     /*ExecutableCommand,*/ execute,
-    cursor::{ MoveTo },
+    cursor::{ MoveTo, Hide, Show },
 };
 use std::{
     io::{ self, Stdout, stdout, /*Read,*/ Write },
@@ -18,22 +18,30 @@ pub struct TermSize {
 // ! ALWAYS CALL `exit_raw_mode()` AT END OF CODE
 // !
 
-pub fn enter_raw_mode( mut stdout: &Stdout ) {
-    execute!( stdout, terminal::EnterAlternateScreen ).ok();
+pub fn enter_raw_mode( mut screen: &Stdout ) {
+    execute!( screen, terminal::EnterAlternateScreen ).ok();
     terminal::enable_raw_mode().ok();
 }
 
-pub fn exit_raw_mode( mut stdout: &Stdout ) {
-    execute!( stdout, terminal::LeaveAlternateScreen ).ok();
+pub fn hide_cursor( mut screen: &Stdout ) {
+    execute!( screen, Hide ).unwrap();
+}
+
+pub fn exit_raw_mode( mut screen: &Stdout ) {
+    execute!( screen, terminal::LeaveAlternateScreen ).ok();
     terminal::disable_raw_mode().ok();
 }
 
-pub fn clear_screen( stdout: &Stdout ) {
-    //
+pub fn show_cursor( mut screen: &Stdout ) {
+    execute!( screen, Show ).unwrap();
 }
 
-pub fn move_cursor( mut stdout: &Stdout, x: u16, y: u16 ) -> Result<(), Box<dyn Error>> {
-    execute!( stdout, MoveTo( x, y ) );
+// pub fn clear_screen( stdout: &Stdout ) {
+//     //
+// }
+
+pub fn move_cursor( mut screen: &Stdout, x: u16, y: u16 ) -> Result<(), Box<dyn Error>> {
+    execute!( screen, MoveTo( x, y ) );
     Ok(())
 }
 
