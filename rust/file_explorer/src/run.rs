@@ -44,19 +44,24 @@ pub fn run() -> Result<(), io::Error> {
             write!( stdout, "Binary: {0:08b}  ASCII: {0:#3?}  Char: {1:#?}\r", byte, c ).unwrap();
         }
 
-        term::move_cursor( cursor_x, term_size.rows - 2 ).unwrap();
+        let cursor_y = term_size.rows - 2;
+
+        term::move_cursor( cursor_x, cursor_y ).unwrap();
 
         match byte {
             127 => {
                 if cursor_x > 0 {
                     cursor_x -= 1;
-                    term::move_cursor( cursor_x, term_size.rows ).unwrap();
+                    term::move_cursor( cursor_x, cursor_y ).unwrap();
                     write!( stdout,  " " ).unwrap();
                     // so that the cursor doesn't lag a box behind
-                    term::move_cursor( cursor_x, term_size.rows ).unwrap();
+                    term::move_cursor( cursor_x, cursor_y ).unwrap();
                 }
             }
-            113 => { // q ==> quit
+            113 /* q */
+            | 27 /* escape */
+            | 3 /* <C-c> */
+            => { // q ==> quit
                 writeln!( stdout, "\n\rQuitting... \r" ).unwrap();
                 break;
             }
