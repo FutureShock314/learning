@@ -7,6 +7,7 @@ use std::{
     },
 };
 use crate::term::{ self, TermSize };
+use crate::input;
 
 pub fn run() -> Result<(), io::Error> {
     let stdin = stdin();
@@ -34,7 +35,7 @@ pub fn run() -> Result<(), io::Error> {
         let byte = byte.unwrap(); // would use char but I can't use it for printing
         let c = byte as char;
         // println!(  "{}", c );
-        term::move_cursor( &stdout, 2, term_size.rows - 3 ).unwrap();
+        term::move_cursor( 2, term_size.rows - 3 ).unwrap();
 
         if c.is_control() {
             // all the spaces are to remove any `Char: {}` that was there previously
@@ -43,16 +44,16 @@ pub fn run() -> Result<(), io::Error> {
             write!( stdout, "Binary: {0:08b}  ASCII: {0:#3?}  Char: {1:#?}\r", byte, c ).unwrap();
         }
 
-        term::move_cursor( &stdout, cursor_x, term_size.rows - 2 ).unwrap();
+        term::move_cursor( cursor_x, term_size.rows - 2 ).unwrap();
 
         match byte {
             127 => {
                 if cursor_x > 0 {
                     cursor_x -= 1;
-                    term::move_cursor( &stdout, cursor_x, term_size.rows ).unwrap();
+                    term::move_cursor( cursor_x, term_size.rows ).unwrap();
                     write!( stdout,  " " ).unwrap();
                     // so that the cursor doesn't lag a box behind
-                    term::move_cursor( &stdout, cursor_x, term_size.rows ).unwrap();
+                    term::move_cursor( cursor_x, term_size.rows ).unwrap();
                 }
             }
             113 => { // q ==> quit
@@ -68,7 +69,7 @@ pub fn run() -> Result<(), io::Error> {
         stdout.flush().unwrap();
     }
 
-    term::move_cursor( &stdout, 0, term_size.rows ).unwrap();
+    term::move_cursor( 0, term_size.rows ).unwrap();
     term::exit_raw_mode();
     Ok(())
 }

@@ -1,4 +1,5 @@
 mod fuzzy_find;
+mod input;
 mod run;
 mod term;
 
