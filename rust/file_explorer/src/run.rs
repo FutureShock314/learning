@@ -89,7 +89,7 @@ pub fn _run() -> Result<(), io::Error> {
                     //     &screen, MAIN_SECTION_X,
                     //     selected_index.try_into().unwrap()
                     // ).unwrap();
-                    handle::select_down( &screen, paths, MAIN_SECTION_X, selected_index );
+                    handle::select_down( &screen, &paths, MAIN_SECTION_X, selected_index );
                 }
             }
             'k' => {
