@@ -5,8 +5,8 @@ use std::{
         Read, Write,
         stdin, stdout
     },
+    sync::{ Mutex, Arc },
 };
-// use crossterm::execute;
 // use crate::debug;
 use crate::handle;
 use crate::term::{ self, TermSize, PathData, };
@@ -74,7 +74,8 @@ pub fn _run() -> Result<(), io::Error> {
         break 'main;
     }
 
-    let arc_screen = std::sync::Arc::new( screen );
+    let mutex_screen = Mutex::new( screen );
+    let arc_mut_screen = Arc::new( mutex_screen );
 
     for byte in stdin.bytes() {
         let byte = byte?;
@@ -86,7 +87,7 @@ pub fn _run() -> Result<(), io::Error> {
         match c {
             'h' => { 
                 handle::todo(
-                    arc_screen.clone(), // clones pointer not memory
+                    Arc::clone( &arc_mut_screen ), // clones pointer not memory
                     term_size.cols
                 ); }
             'j' => {
@@ -101,18 +102,26 @@ pub fn _run() -> Result<(), io::Error> {
                     selected_index -= 1;
                 }
             }
-            'l' => { handle::todo( cloned_arc_screen, term_size.cols ); }
+            'l' => { handle::todo( Arc::clone( &arc_mut_screen ), term_size.cols ); }
             'q' => {
                 handle::on_quit( &screen, term_size.cols );
                 break;
             }
             _ => {
-                handle::todo( cloned_arc_screen, term_size.cols );
+                handle::todo( Arc::clone( &arc_mut_screen ), term_size.cols );
             }
         };
     }
 
-    term::exit_raw_mode( &screen );
-    term::show_cursor( &screen );
+    // term::exit_raw_mode( &screen );
+    // term::show_cursor( &screen );
+
+    crossterm::execute!(
+        arc_mut_screen.lock().unwrap(),
+        crossterm::cursor::Show,
+        crossterm::terminal::LeaveAlternateScreen,
+    );
+    crossterm::terminal::disable_raw_mode().ok();
+
     Ok(())
 }

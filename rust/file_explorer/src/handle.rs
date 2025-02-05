@@ -5,7 +5,7 @@ use crossterm::style::{
     ResetColor, Color, Attribute, SetAttribute, Stylize
 };
 use std::io::{ Stdout, stdout, Write, };
-use std::sync::Arc;
+use std::sync::{ Arc, Mutex };
 use crate::term::{ self, PathData, };
 
 fn fg( col: Color ) -> SetForegroundColor {
@@ -16,14 +16,15 @@ fn bg( col: Color ) -> SetBackgroundColor {
     SetBackgroundColor( col )
 }
 
-pub async fn todo( mut screen: Arc<Stdout>, cols: u16 ) {
+pub async fn todo( screen: Arc<Mutex<Stdout>>, cols: u16 ) {
     std::thread::spawn( move || {
+        let mut screen = screen.lock().unwrap();
         term::move_cursor( &screen, 0, cols - 1 );
         term::clear_line( &screen );
-        write!( std::sync::Mutex::new( screen ),
+        write!( screen,
             "{}", "Not implemented yet!".black().on_red().bold()
         ).unwrap();
-        std::sync::Mutex::new( screen ).flush().unwrap();
+        screen.flush().unwrap();
         std::thread::sleep( std::time::Duration::from_millis( 1000 ) );
         term::clear_line( &screen );
     } );
