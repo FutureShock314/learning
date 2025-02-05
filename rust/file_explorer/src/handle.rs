@@ -35,6 +35,7 @@ pub fn select( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, )
             "{:<20}",
             path.path.display()
         ) ),
+        SetAttribute( Attribute::Clear ),
         ResetColor,
     ).unwrap();
 }
@@ -52,6 +53,7 @@ pub fn deselect( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16,
             "{:<20}",
             path.path.display()
         ) ),
+        SetAttritbute( Attribute::Clear ),
         ResetColor,
     ).unwrap();
 }
