@@ -2,7 +2,7 @@ use std::io::{ stdout, Stdout, Write };
 use crate::term;
 
 pub fn _check_byte( mut screen: &Stdout, byte: u8, c: char, x: u16, y: u16 ) {
-    term::move_cursor( screen, x, y ).unwrap();
+    term::move_cursor( screen, x, y );
 
     if c.is_control() {
         // all the spaces are to remove any `Char: {}` that was there previously

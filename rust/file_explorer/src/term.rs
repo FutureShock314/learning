@@ -27,31 +27,31 @@ pub struct TermSize {
 pub struct PathData {
     pub path: std::path::PathBuf,
     pub path_type: PathType,
-    pub bg_col: style::Color,
-    pub fg_col: style::Color,
+    pub col_1: style::Color,
+    pub col_2: style::Color,
 }
 
 impl PathData {
     pub fn new( path: std::path::PathBuf ) -> PathData {
         if path.is_dir() {
             let path_type = PathType::Dir;
-            let bg_col = style::Color::Blue;
-            let fg_col = style::Color::Black;
+            let col_1 = style::Color::Blue;
+            let col_2 = style::Color::Black;
             return PathData {
                 path: path,
                 path_type: path_type,
-                bg_col: bg_col,
-                fg_col: fg_col
+                col_1: col_1,
+                col_2: col_2
             };
         } else {
             let path_type = PathType::File;
-            let bg_col = style::Color::White;
-            let fg_col = style::Color::Black;
+            let col_1 = style::Color::Rgb { r: 255, g: 255, b: 255 };
+            let col_2 = style::Color::Black;
             return PathData {
                 path: path,
                 path_type: path_type,
-                bg_col: bg_col,
-                fg_col: fg_col
+                col_1: col_1,
+                col_2: col_2
             };
         }
     }
@@ -83,9 +83,8 @@ pub fn clear_line( mut screen: &Stdout ) {
     execute!( screen, Clear( ClearType::CurrentLine ) ).unwrap();
 }
 
-pub fn move_cursor( mut screen: &Stdout, x: u16, y: u16 ) -> Result<(), Box<dyn Error>> {
-    execute!( screen, MoveTo( x, y ) );
-    Ok(())
+pub fn move_cursor( mut screen: &Stdout, x: u16, y: u16 ) {
+    execute!( screen, MoveTo( x, y ) ).unwrap();
 }
 
 /// Returns a `TermSize` object containing `{ cols, rows }`

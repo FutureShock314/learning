@@ -54,7 +54,7 @@ pub fn _run() -> Result<(), io::Error> {
     for path in dir {
         let path = path.unwrap().path();
         
-        term::move_cursor( &screen, MAIN_SECTION_X, path_count ).unwrap();
+        term::move_cursor( &screen, MAIN_SECTION_X, path_count );
         
         write!( screen, "{:<20}", path.display() ).unwrap();
         screen.flush().unwrap();
@@ -77,7 +77,7 @@ pub fn _run() -> Result<(), io::Error> {
         let byte = byte?;
         let c = byte as char;
 
-        term::move_cursor( &screen, MAIN_SECTION_X, 0 ).unwrap();
+        term::move_cursor( &screen, MAIN_SECTION_X, 0 );
         screen.flush().unwrap();
 
         match c {
