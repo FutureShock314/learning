@@ -15,21 +15,6 @@ fn bg( col: Color ) -> SetBackgroundColor {
     SetBackgroundColor( col )
 }
 
-pub fn on_backspace( mut screen: &Stdout, mut cursor_x: u16, cursor_y: u16, min_x: u16 ) -> u16 {
-    if cursor_x > min_x {
-        cursor_x -= 1;
-        term::move_cursor( screen, cursor_x, cursor_y );
-        write!( screen,  " " ).unwrap();
-        // so that the cursor doesn't lag a box behind
-        term::move_cursor( screen, cursor_x, cursor_y );
-    }
-    cursor_x
-}
-
-pub fn on_input( screen: &Stdout, input: char ) {
-    let ( _screen, _char ) = ( screen, input );
-}
-
 pub fn on_quit( mut screen: &Stdout, cols: u16 ) {
     term::move_cursor( screen, 0, cols - 1 );
     write!( screen, "Quitting..." ).unwrap();
