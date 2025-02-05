@@ -2,7 +2,7 @@ use crossterm::{ self, execute };
 use crossterm::style::{
     Print,
     SetForegroundColor, SetBackgroundColor,
-    ResetColor, Color, Attribute, SetAttribute
+    ResetColor, Color, Attribute, SetAttribute, Stylize
 };
 use std::io::{ Stdout, Write, };
 use crate::term::{ self, PathData, };
@@ -15,8 +15,23 @@ fn bg( col: Color ) -> SetBackgroundColor {
     SetBackgroundColor( col )
 }
 
+pub fn todo( mut screen: &Stdout, cols: u16 ) {
+    let mut screen = screen.clone();
+    std::thread::spawn( move || {
+        term::move_cursor( screen, 0, cols - 1 );
+        term::clear_line( screen );
+        write!( screen,
+            "{}", "Not implemented yet!".black().on_red().bold()
+        ).unwrap();
+        screen.flush().unwrap();
+        std::thread::sleep( std::time::Duration::from_millis( 1000 ) );
+        term::clear_line( screen );
+    } );
+}
+
 pub fn on_quit( mut screen: &Stdout, cols: u16 ) {
     term::move_cursor( screen, 0, cols - 1 );
+    term::clear_line( screen );
     write!( screen, "Quitting..." ).unwrap();
     screen.flush().unwrap();
     std::thread::sleep( std::time::Duration::from_millis( 500 ) );
@@ -35,7 +50,7 @@ pub fn select( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, )
             "{:<20}",
             path.path.display()
         ) ),
-        SetAttribute( Attribute::Clear ),
+        SetAttribute( Attribute::Reset ),
         ResetColor,
     ).unwrap();
 }
@@ -53,7 +68,7 @@ pub fn deselect( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16,
             "{:<20}",
             path.path.display()
         ) ),
-        SetAttritbute( Attribute::Clear ),
+        SetAttribute( Attribute::Reset ),
         ResetColor,
     ).unwrap();
 }

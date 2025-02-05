@@ -15,7 +15,9 @@ use crate::MAIN_SECTION_X;
 
 /// Runs base checks for args etc. before confirming that `_run()` can be used
 pub fn run() -> Result<(), Box<dyn std::error::Error>>{
-    let _args: Vec<_> = std::env::args().collect();
+    let args: Vec<_> = std::env::args().collect();
+
+    println!( "{:?}", args );
 
     let term_size = term::get_term_size().unwrap();
 
@@ -80,7 +82,7 @@ pub fn _run() -> Result<(), io::Error> {
         screen.flush().unwrap();
 
         match c {
-            'h' => { todo!() }
+            'h' => { handle::todo( &screen, term_size.cols ); }
             'j' => {
                 if selected_index < path_count - 1 {
                     handle::select_down( &screen, &paths, MAIN_SECTION_X, selected_index );
@@ -93,13 +95,13 @@ pub fn _run() -> Result<(), io::Error> {
                     selected_index -= 1;
                 }
             }
-            'l' => { todo!() }
+            'l' => { handle::todo( &screen, term_size.cols ); }
             'q' => {
                 handle::on_quit( &screen, term_size.cols );
                 break;
             }
             _ => {
-                handle::on_input( &screen, c );
+                handle::todo( &screen, term_size.cols );
             }
         };
     }
