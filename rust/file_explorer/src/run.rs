@@ -74,9 +74,6 @@ pub fn _run() -> Result<(), io::Error> {
         break 'main;
     }
 
-    let mutex_screen = Mutex::new( screen );
-    let arc_mut_screen = Arc::new( mutex_screen );
-
     for byte in stdin.bytes() {
         let byte = byte?;
         let c = byte as char;
@@ -85,11 +82,7 @@ pub fn _run() -> Result<(), io::Error> {
         screen.flush().unwrap();
 
         match c {
-            'h' => { 
-                handle::todo(
-                    Arc::clone( &arc_mut_screen ), // clones pointer not memory
-                    term_size.cols
-                ); }
+            'h' => { continue; }
             'j' => {
                 if selected_index < path_count - 1 {
                     handle::select_down( &screen, &paths, MAIN_SECTION_X, selected_index );
@@ -102,26 +95,18 @@ pub fn _run() -> Result<(), io::Error> {
                     selected_index -= 1;
                 }
             }
-            'l' => { handle::todo( Arc::clone( &arc_mut_screen ), term_size.cols ); }
+            'l' => { continue; }
             'q' => {
                 handle::on_quit( &screen, term_size.cols );
                 break;
             }
             _ => {
-                handle::todo( Arc::clone( &arc_mut_screen ), term_size.cols );
+                continue;
             }
         };
     }
 
-    // term::exit_raw_mode( &screen );
-    // term::show_cursor( &screen );
-
-    crossterm::execute!(
-        arc_mut_screen.lock().unwrap(),
-        crossterm::cursor::Show,
-        crossterm::terminal::LeaveAlternateScreen,
-    );
-    crossterm::terminal::disable_raw_mode().ok();
-
+    term::exit_raw_mode( &screen );
+    term::show_cursor( &screen );
     Ok(())
 }
