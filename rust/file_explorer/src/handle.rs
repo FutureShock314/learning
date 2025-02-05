@@ -4,7 +4,8 @@ use crossterm::style::{
     SetForegroundColor, SetBackgroundColor,
     ResetColor, Color, Attribute, SetAttribute, Stylize
 };
-use std::io::{ Stdout, Write, };
+use std::io::{ Stdout, stdout, Write, };
+use std::sync::Arc;
 use crate::term::{ self, PathData, };
 
 fn fg( col: Color ) -> SetForegroundColor {
@@ -15,17 +16,16 @@ fn bg( col: Color ) -> SetBackgroundColor {
     SetBackgroundColor( col )
 }
 
-pub fn todo( mut screen: &Stdout, cols: u16 ) {
-    let mut screen = screen.clone();
+pub async fn todo( mut screen: Arc<Stdout>, cols: u16 ) {
     std::thread::spawn( move || {
-        term::move_cursor( screen, 0, cols - 1 );
-        term::clear_line( screen );
-        write!( screen,
+        term::move_cursor( &screen, 0, cols - 1 );
+        term::clear_line( &screen );
+        write!( std::sync::Mutex::new( screen ),
             "{}", "Not implemented yet!".black().on_red().bold()
         ).unwrap();
-        screen.flush().unwrap();
+        std::sync::Mutex::new( screen ).flush().unwrap();
         std::thread::sleep( std::time::Duration::from_millis( 1000 ) );
-        term::clear_line( screen );
+        term::clear_line( &screen );
     } );
 }
 

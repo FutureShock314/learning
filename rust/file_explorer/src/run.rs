@@ -71,8 +71,10 @@ pub fn _run() -> Result<(), io::Error> {
     std::thread::sleep( std::time::Duration::from_millis( 500 ) );
     
     'main: loop {
-        break;
+        break 'main;
     }
+
+    let arc_screen = std::sync::Arc::new( screen );
 
     for byte in stdin.bytes() {
         let byte = byte?;
@@ -82,7 +84,11 @@ pub fn _run() -> Result<(), io::Error> {
         screen.flush().unwrap();
 
         match c {
-            'h' => { handle::todo( &screen, term_size.cols ); }
+            'h' => { 
+                handle::todo(
+                    arc_screen.clone(), // clones pointer not memory
+                    term_size.cols
+                ); }
             'j' => {
                 if selected_index < path_count - 1 {
                     handle::select_down( &screen, &paths, MAIN_SECTION_X, selected_index );
@@ -95,13 +101,13 @@ pub fn _run() -> Result<(), io::Error> {
                     selected_index -= 1;
                 }
             }
-            'l' => { handle::todo( &screen, term_size.cols ); }
+            'l' => { handle::todo( cloned_arc_screen, term_size.cols ); }
             'q' => {
                 handle::on_quit( &screen, term_size.cols );
                 break;
             }
             _ => {
-                handle::todo( &screen, term_size.cols );
+                handle::todo( cloned_arc_screen, term_size.cols );
             }
         };
     }
