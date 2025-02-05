@@ -8,10 +8,7 @@ use crossterm::{
     cursor::{ MoveTo, Hide, Show },
     style,
 };
-use std::{
-    io::{ self, Stdout, stdout, /*Read,*/ Write },
-    error::Error,
-};
+use std::{ io::{ self, Stdout, } };
 
 pub enum PathType {
     File,

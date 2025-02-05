@@ -6,11 +6,10 @@ use std::{
         stdin, stdout
     },
 };
-use crossterm::execute;
-use crossterm::style::{Print, SetForegroundColor, SetBackgroundColor, ResetColor, Color, Attribute};
-use crate::debug;
+// use crossterm::execute;
+// use crate::debug;
 use crate::handle;
-use crate::term::{ self, TermSize, PathData, PathType };
+use crate::term::{ self, TermSize, PathData, };
 
 use crate::MAIN_SECTION_X;
 

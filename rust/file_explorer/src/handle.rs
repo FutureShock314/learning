@@ -1,14 +1,11 @@
-use crossterm::{
-    self, execute,
-    terminal::{ Clear, ClearType, }
-};
+use crossterm::{ self, execute };
 use crossterm::style::{
     Print,
     SetForegroundColor, SetBackgroundColor,
     ResetColor, Color, Attribute, SetAttribute
 };
-use std::io::{ stdout, Stdout, Write, };
-use crate::term::{ self, PathData, PathType, };
+use std::io::{ Stdout, Write, };
+use crate::term::{ self, PathData, };
 
 fn fg( col: Color ) -> SetForegroundColor {
     SetForegroundColor( col )
@@ -29,8 +26,8 @@ pub fn on_backspace( mut screen: &Stdout, mut cursor_x: u16, cursor_y: u16, min_
     cursor_x
 }
 
-pub fn on_input( stdout: &Stdout, input: char ) {
-    // ...
+pub fn on_input( screen: &Stdout, input: char ) {
+    let ( _screen, _char ) = ( screen, input );
 }
 
 pub fn on_quit( mut screen: &Stdout, cols: u16 ) {
@@ -54,7 +51,7 @@ pub fn select( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, )
             path.path.display()
         ) ),
         ResetColor,
-    );
+    ).unwrap();
 }
 
 pub fn deselect( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, ) {
@@ -71,7 +68,7 @@ pub fn deselect( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16,
             path.path.display()
         ) ),
         ResetColor,
-    );
+    ).unwrap();
 }
 
 pub fn select_up( screen: &Stdout, paths: &Vec<PathData>, x: u16, curr_selected_index: u16 ) {

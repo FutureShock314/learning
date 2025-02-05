@@ -1,4 +1,4 @@
-use std::io::{ stdout, Stdout, Write };
+use std::io::{ Stdout, Write };
 use crate::term;
 
 pub fn _check_byte( mut screen: &Stdout, byte: u8, c: char, x: u16, y: u16 ) {
