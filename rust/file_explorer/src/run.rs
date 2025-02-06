@@ -8,6 +8,7 @@ use std::{
     sync::{ Mutex, Arc },
 };
 // use crate::debug;
+use crate::files;
 use crate::handle;
 use crate::term::{ self, TermSize, PathData, };
 
@@ -48,21 +49,11 @@ pub fn _run() -> Result<(), io::Error> {
 
     term::enter_raw_mode( &screen );
     term::hide_cursor( &screen );
+
+    let path = std::path::PathBuf::from( "." );
     
-    let dir: std::fs::ReadDir = std::fs::read_dir(".").unwrap();
-    let mut path_count = 0;
-    let mut paths: Vec<PathData> = vec![];
-    for path in dir {
-        let path = path.unwrap().path();
-        
-        term::move_cursor( &screen, MAIN_SECTION_X, path_count );
-        
-        write!( screen, "{:<20}", path.display() ).unwrap();
-        screen.flush().unwrap();
-        
-        path_count += 1;
-        paths.push( PathData::new( path ) );
-    }
+    let paths = files::main_section_files( &screen, path, MAIN_SECTION_X );
+    let path_count = paths.len();
  
     handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
 
@@ -85,13 +76,17 @@ pub fn _run() -> Result<(), io::Error> {
             'h' => { continue; }
             'j' => {
                 if selected_index < path_count - 1 {
-                    handle::select_down( &screen, &paths, MAIN_SECTION_X, selected_index );
+                    handle::select_down( &screen, &paths, MAIN_SECTION_X,
+                        selected_index.try_into().unwrap()
+                    );
                     selected_index += 1;
                 }
             }
             'k' => {
                 if selected_index > 0 {
-                    handle::select_up( &screen, &paths, MAIN_SECTION_X, selected_index );
+                    handle::select_up( &screen, &paths, MAIN_SECTION_X,
+                        selected_index.try_into().unwrap()
+                    );
                     selected_index -= 1;
                 }
             }

@@ -42,7 +42,8 @@ impl PathData {
             };
         } else {
             let path_type = PathType::File;
-            let col_1 = style::Color::Rgb { r: 255, g: 255, b: 255 };
+            // let col_1 = style::Color::Rgb { r: 255, g: 255, b: 255 };
+            let col_1 = style::Color::Grey;
             let col_2 = style::Color::Black;
             return PathData {
                 path: path,
