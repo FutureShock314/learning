@@ -6,6 +6,7 @@ use std::{
         stdin, stdout
     },
     sync::{ Mutex, Arc },
+    path::PathBuf
 };
 // use crate::debug;
 use crate::files;
@@ -35,24 +36,28 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>{
             term_size.cols
         );
     } else {
-        _run().unwrap();
+        if args.len() > 1 {
+            let path = PathBuf::from( args[1].clone() );
+                // .expect( "Invalid Path Argument!" );
+            _run( path ).unwrap();
+        } else {
+            _run( PathBuf::from( "." ) ).unwrap();
+        }
         return Ok(());
     }
     Err( "Bad terminal size".into() )
 }
 
 /// Actual run functiom, including main loop
-pub fn _run() -> Result<(), io::Error> {
+pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
     let stdin = stdin();
     let mut screen = stdout();
     let term_size: TermSize = term::get_term_size()?;
 
     term::enter_raw_mode( &screen );
     term::hide_cursor( &screen );
-
-    let path = std::path::PathBuf::from( "." );
     
-    let paths = files::main_section_files( &screen, path, MAIN_SECTION_X );
+    let paths = files::main_section_files( &screen, init_path, MAIN_SECTION_X );
     let path_count = paths.len();
  
     handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
