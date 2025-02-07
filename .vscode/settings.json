@@ -1,0 +1,6 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "/home/user/learning/rust/file_explorer/Cargo.toml",
+        "/home/user/learning/rust/weather_fetch/Cargo.toml",
+    ]
+}

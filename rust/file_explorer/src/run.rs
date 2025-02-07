@@ -42,7 +42,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>{
             _run( path ).unwrap();
         } else {
             _run( PathBuf::from( "." ) ).unwrap();
-        }
+        
         return Ok(());
     }
     Err( "Bad terminal size".into() )

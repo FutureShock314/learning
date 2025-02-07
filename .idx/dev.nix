@@ -18,7 +18,7 @@
     ]))
     
     ### RUST
-    rustc
+    # rustc
     rustup
     cargo
     gcc
