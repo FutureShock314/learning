@@ -58,8 +58,8 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
     term::enter_raw_mode( &screen );
     term::hide_cursor( &screen );
     
-    let paths = files::main_section_files( &screen, init_path, MAIN_SECTION_X );
-    let path_count = paths.len();
+    let mut paths = files::main_section_files( &screen, init_path, MAIN_SECTION_X );
+    let mut path_count = paths.len();
  
     handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
 
@@ -96,7 +96,17 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                     selected_index -= 1;
                 }
             }
-            'l' => { continue; }
+            'l' => {
+                if paths[selected_index as usize].path_type == term::PathType::Dir {
+                    let path = paths[selected_index as usize].path.clone();
+                    paths =
+                        files::main_section_files( &screen, path, MAIN_SECTION_X )
+                    ;
+                    path_count = paths.len();
+                    handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
+                    selected_index = 0;
+                }
+            }
             'q' => {
                 handle::on_quit( &screen, term_size.cols );
                 break;
