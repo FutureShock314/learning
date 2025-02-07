@@ -18,7 +18,15 @@ fn bg( col: Color ) -> SetBackgroundColor {
 pub fn on_quit( mut screen: &Stdout, cols: u16 ) {
     term::move_cursor( screen, 0, cols - 1 );
     term::clear_line( screen );
-    write!( screen, "Quitting..." ).unwrap();
+    // write!( screen, "Quitting..." ).unwrap();
+    execute!(
+        screen,
+        bg( Color::Red ),
+        SetAttribute( Attribute::Bold ),
+        Print( " Quitting... " ),
+        ResetColor,
+        SetAttribute( Attribute::Reset )
+    ).unwrap();
     screen.flush().unwrap();
     std::thread::sleep( std::time::Duration::from_millis( 500 ) );
 }
