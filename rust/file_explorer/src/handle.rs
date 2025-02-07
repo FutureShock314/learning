@@ -6,6 +6,7 @@ use crossterm::style::{
 };
 use std::io::{ Stdout, Write, };
 use crate::term::{ self, PathData, };
+use crate::MAIN_SECTION_FRAC;
 
 fn fg( col: Color ) -> SetForegroundColor {
     SetForegroundColor( col )
@@ -32,6 +33,10 @@ pub fn on_quit( mut screen: &Stdout, cols: u16 ) {
 }
 
 pub fn select( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, ) {
+    let term_size = term::get_term_size().unwrap();
+    let cols = term_size.cols as f64;
+    let width: usize = ( cols * MAIN_SECTION_FRAC ).floor() as usize;
+
     term::move_cursor( screen, x, index );
     let index = index as usize;
     let path = &paths[index];
@@ -41,8 +46,9 @@ pub fn select( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, )
         SetAttribute( Attribute::Bold ),
         bg( path.col_1 ), fg( path.col_2 ),
         Print( format!(
-            "{:<20}",
-            path.path.display()
+            " {:<1$} {1:}",
+            path.path.file_name().unwrap().to_str().unwrap(),
+            width,
         ) ),
         SetAttribute( Attribute::Reset ),
         ResetColor,
@@ -50,6 +56,10 @@ pub fn select( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, )
 }
 
 pub fn deselect( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, ) {
+    let term_size = term::get_term_size().unwrap();
+    let cols = term_size.cols as f64;
+    let width: usize = ( cols * MAIN_SECTION_FRAC ).floor() as usize;
+
     term::move_cursor( screen, x, index );
     let index = index as usize;
     let path = &paths[index];
@@ -59,8 +69,9 @@ pub fn deselect( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16,
         SetAttribute( Attribute::Bold ),
         fg( path.col_1 ),
         Print( format!(
-            "{:<20}",
-            path.path.display()
+            " {:<1$}",
+            path.path.file_name().unwrap().to_str().unwrap(),
+            width,
         ) ),
         SetAttribute( Attribute::Reset ),
         ResetColor,

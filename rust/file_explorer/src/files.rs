@@ -8,8 +8,13 @@ use crossterm::style::{
     Attribute, SetAttribute
 };
 use crate::term::{ self, PathData };
+use crate::MAIN_SECTION_FRAC;
 
 pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<PathData> {
+    let term_size = term::get_term_size().unwrap();
+    let cols = term_size.cols as f64;
+    let width: usize = ( cols * MAIN_SECTION_FRAC ).floor() as usize;
+
     let dir = std::fs::read_dir( path ).unwrap();
     let mut paths: Vec<PathData> = vec![];
     for path in dir {
@@ -23,7 +28,11 @@ pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<P
             screen,
             SetForegroundColor( path.col_1 ),
             SetAttribute( Attribute::Bold ),
-            Print( format!( "{:<20}", path.path.display() ) ),
+            Print( format!(
+                " {:<1$}",
+                path.path.file_name().unwrap().to_str().unwrap(),
+                width,
+            ) ),
             ResetColor,
             SetAttribute( Attribute::Reset )
         ).unwrap();
