@@ -55,10 +55,12 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
     let mut screen = stdout();
     let term_size: TermSize = term::get_term_size()?;
 
+    let mut path = std::path::absolute( init_path ).unwrap(); // so that it can be muted later
+
     term::enter_raw_mode( &screen );
     term::hide_cursor( &screen );
     
-    let mut paths = files::main_section_files( &screen, init_path, MAIN_SECTION_X );
+    let mut paths = files::main_section_files( &screen, path.clone(), MAIN_SECTION_X );
     let mut path_count = paths.len();
  
     handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
@@ -79,7 +81,15 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
         screen.flush().unwrap();
 
         match c {
-            'h' => { continue; }
+            'h' => {
+                path.pop();
+                paths =
+                    files::main_section_files( &screen, path.clone(), MAIN_SECTION_X )
+                ;
+                path_count = paths.len();
+                handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
+                selected_index = 0;
+            }
             'j' => {
                 if selected_index < path_count - 1 {
                     handle::select_down( &screen, &paths, MAIN_SECTION_X,
@@ -98,9 +108,9 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
             }
             'l' => {
                 if paths[selected_index as usize].path_type == term::PathType::Dir {
-                    let path = paths[selected_index as usize].path.clone();
+                    path = paths[selected_index as usize].path.clone();
                     paths =
-                        files::main_section_files( &screen, path, MAIN_SECTION_X )
+                        files::main_section_files( &screen, path.clone(), MAIN_SECTION_X )
                     ;
                     path_count = paths.len();
                     handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
