@@ -23,7 +23,7 @@ pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<P
 
     let mut paths: Vec<PathData> = vec![];
     let mut files: Vec<PathData> = vec![];
-    let mut dirs: Vec<PathData> = vec![];
+    let mut dirs : Vec<PathData> = vec![];
 
     for path in dir {
         let path = PathData::new( path.unwrap().path() );
