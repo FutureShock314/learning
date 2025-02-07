@@ -8,7 +8,7 @@ use crossterm::{
     cursor::{ MoveTo, Hide, Show },
     style,
 };
-use std::{ io::{ self, Stdout, } };
+use std::io::{ self, Stdout, };
 
 pub enum PathType {
     File,
@@ -34,6 +34,7 @@ impl PathData {
             let path_type = PathType::Dir;
             let col_1 = style::Color::Blue;
             let col_2 = style::Color::Black;
+
             return PathData {
                 path: path,
                 path_type: path_type,
@@ -45,6 +46,7 @@ impl PathData {
             // let col_1 = style::Color::Rgb { r: 255, g: 255, b: 255 };
             let col_1 = style::Color::Grey;
             let col_2 = style::Color::Black;
+
             return PathData {
                 path: path,
                 path_type: path_type,

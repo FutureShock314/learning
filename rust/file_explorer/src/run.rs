@@ -5,18 +5,18 @@ use std::{
         Read, Write,
         stdin, stdout
     },
-    sync::{ Mutex, Arc },
+    // sync::{ Mutex, Arc },
     path::PathBuf
 };
 // use crate::debug;
 use crate::files;
 use crate::handle;
-use crate::term::{ self, TermSize, PathData, };
+use crate::term::{ self, TermSize };
 
 use crate::MAIN_SECTION_X;
 
 /// Runs base checks for args etc. before confirming that `_run()` can be used
-pub fn run() -> Result<(), Box<dyn std::error::Error>>{
+pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<_> = std::env::args().collect();
 
     println!( "{:?}", args );
@@ -42,6 +42,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>{
             _run( path ).unwrap();
         } else {
             _run( PathBuf::from( "." ) ).unwrap();
+        }
         
         return Ok(());
     }

@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use crossterm::execute;
 use crossterm::style::{
     Print,
-    Color, ResetColor,
+    ResetColor,
     SetForegroundColor,
     Attribute, SetAttribute
 };

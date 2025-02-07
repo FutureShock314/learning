@@ -2,9 +2,9 @@ use crossterm::{ self, execute };
 use crossterm::style::{
     Print,
     SetForegroundColor, SetBackgroundColor,
-    ResetColor, Color, Attribute, SetAttribute, Stylize
+    ResetColor, Color, Attribute, SetAttribute
 };
-use std::io::{ Stdout, stdout, Write, };
+use std::io::{ Stdout, Write, };
 use crate::term::{ self, PathData, };
 
 fn fg( col: Color ) -> SetForegroundColor {
