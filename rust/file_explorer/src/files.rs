@@ -33,11 +33,24 @@ pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<P
         };
     }
 
+    // !
+    // ! This is really performance heavy and I should really make it
+    // ! more efficient at some point
+    // !
+
     dirs.sort_by(
         | a, b |
-        path_name( a.path ).cmp( &path_name( b.path ) )
+        path_name( a.path.clone() ).cmp( &path_name( b.path.clone() ) )
+    );
+    
+    files.sort_by(
+        | a, b |
+        path_name( a.path.clone() ).cmp( &path_name( b.path.clone() ) )
     );
 
+    paths.extend( dirs );
+    paths.extend( files );
+    
     let mut path_index = 0;
 
     for path in &paths {
