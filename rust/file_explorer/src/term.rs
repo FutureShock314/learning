@@ -10,6 +10,7 @@ use crossterm::{
 };
 use std::io::{ self, Stdout, };
 
+#[ derive( PartialEq ) ]
 pub enum PathType {
     File,
     Dir,

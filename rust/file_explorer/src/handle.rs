@@ -46,7 +46,7 @@ pub fn select( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, )
         SetAttribute( Attribute::Bold ),
         bg( path.col_1 ), fg( path.col_2 ),
         Print( format!(
-            " {:<1$} {1:}",
+            " {:<1$}",
             path.path.file_name().unwrap().to_str().unwrap(),
             width,
         ) ),

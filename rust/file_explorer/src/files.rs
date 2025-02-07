@@ -7,8 +7,12 @@ use crossterm::style::{
     SetForegroundColor,
     Attribute, SetAttribute
 };
-use crate::term::{ self, PathData };
+use crate::term::{ self, PathData, PathType::{ Dir, File } };
 use crate::MAIN_SECTION_FRAC;
+
+fn path_name( path: PathBuf ) -> String {
+    path.file_name().unwrap().to_str().unwrap().to_string()
+}
 
 pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<PathData> {
     let term_size = term::get_term_size().unwrap();
@@ -16,10 +20,24 @@ pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<P
     let width: usize = ( cols * MAIN_SECTION_FRAC ).floor() as usize;
 
     let dir = std::fs::read_dir( path ).unwrap();
+
     let mut paths: Vec<PathData> = vec![];
+    let mut files: Vec<PathData> = vec![];
+    let mut dirs: Vec<PathData> = vec![];
+
     for path in dir {
-        paths.push( PathData::new( path.unwrap().path() ) );
+        let path = PathData::new( path.unwrap().path() );
+        match path.path_type {
+            Dir => { dirs.push( path ); }
+            File => { files.push( path ); }
+        };
     }
+
+    dirs.sort_by(
+        | a, b |
+        path_name( a.path ).cmp( &path_name( b.path ) )
+    );
+
     let mut path_index = 0;
 
     for path in &paths {
