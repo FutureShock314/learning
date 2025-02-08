@@ -1,6 +1,5 @@
 mod debug;
 mod files;
-mod fuzzy_find;
 mod handle;
 mod run;
 mod term;
