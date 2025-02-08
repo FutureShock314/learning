@@ -1,0 +1,1 @@
+for dir in ../rust/*
