@@ -51,10 +51,8 @@ pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<P
     paths.extend( dirs );
     paths.extend( files );
     
-    let mut path_index = 0;
-
-    for path in &paths {
-        term::move_cursor( screen, x, path_index );
+    for ( path_index, path  ) in paths.iter().enumerate() {
+        term::move_cursor( screen, x, path_index as u16 );
         execute!(
             screen,
             SetForegroundColor( path.col_1 ),
@@ -67,7 +65,6 @@ pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<P
             ResetColor,
             SetAttribute( Attribute::Reset )
         ).unwrap();
-        path_index += 1;
     }
     screen.flush().unwrap();
 

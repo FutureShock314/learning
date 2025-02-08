@@ -32,7 +32,7 @@ pub fn on_quit( mut screen: &Stdout, cols: u16 ) {
     std::thread::sleep( std::time::Duration::from_millis( 500 ) );
 }
 
-pub fn select( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, ) {
+pub fn select( mut screen: &Stdout, paths: &[PathData], x: u16, index: u16, ) {
     let term_size = term::get_term_size().unwrap();
     let cols = term_size.cols as f64;
     let width: usize = ( cols * MAIN_SECTION_FRAC ).floor() as usize;
@@ -55,7 +55,7 @@ pub fn select( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, )
     ).unwrap();
 }
 
-pub fn deselect( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16, ) {
+pub fn deselect( mut screen: &Stdout, paths: &[PathData], x: u16, index: u16, ) {
     let term_size = term::get_term_size().unwrap();
     let cols = term_size.cols as f64;
     let width: usize = ( cols * MAIN_SECTION_FRAC ).floor() as usize;
@@ -78,12 +78,12 @@ pub fn deselect( mut screen: &Stdout, paths: &Vec<PathData>, x: u16, index: u16,
     ).unwrap();
 }
 
-pub fn select_up( screen: &Stdout, paths: &Vec<PathData>, x: u16, curr_selected_index: u16 ) {
+pub fn select_up( screen: &Stdout, paths: &[PathData], x: u16, curr_selected_index: u16 ) {
     deselect( screen, paths, x, curr_selected_index );
     select(   screen, paths, x, curr_selected_index - 1 );
 }
 
-pub fn select_down( screen: &Stdout, paths: &Vec<PathData>, x: u16, curr_selected_index: u16 ) {
+pub fn select_down( screen: &Stdout, paths: &[PathData], x: u16, curr_selected_index: u16 ) {
     deselect( screen, paths, x, curr_selected_index );
     select(   screen, paths, x, curr_selected_index + 1 );
 }

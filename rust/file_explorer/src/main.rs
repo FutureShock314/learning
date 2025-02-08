@@ -10,6 +10,6 @@ pub const MAIN_SECTION_FRAC: f64 = 0.35;
 
 fn main() {
     // Code should probably go here
-    let result = run::run().unwrap();
-    println!("Result: {:?}", result);
+    run::run().unwrap();
+    // println!("Result: {:?}", result);
 }

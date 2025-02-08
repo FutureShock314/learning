@@ -55,12 +55,14 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
     let mut screen = stdout();
     let term_size: TermSize = term::get_term_size()?;
 
-    let mut path = std::path::absolute( init_path ).unwrap(); // so that it can be muted later
+    // so that it can be muted later
+    let mut path = std::path::absolute( init_path ).unwrap();
 
     term::enter_raw_mode( &screen );
     term::hide_cursor( &screen );
     
-    let mut paths = files::main_section_files( &screen, path.clone(), MAIN_SECTION_X );
+    let mut paths =
+        files::main_section_files( &screen, path.clone(), MAIN_SECTION_X );
     let mut path_count = paths.len();
  
     handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
@@ -107,8 +109,8 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                 }
             }
             'l' => {
-                if paths[selected_index as usize].path_type == term::PathType::Dir {
-                    path = paths[selected_index as usize].path.clone();
+                if paths[selected_index].path_type == term::PathType::Dir {
+                    path = paths[selected_index].path.clone();
                     paths =
                         files::main_section_files( &screen, path.clone(), MAIN_SECTION_X )
                     ;
