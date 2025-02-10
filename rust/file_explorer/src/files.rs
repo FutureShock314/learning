@@ -25,6 +25,8 @@ pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<P
     let mut files: Vec<PathData> = vec![];
     let mut dirs : Vec<PathData> = vec![];
 
+    clear_area( screen, 0, x, term_size.rows - 1, term_size.cols - 1 );
+
     for path in dir {
         let path = PathData::new( path.unwrap().path() );
         match path.path_type {
@@ -69,4 +71,22 @@ pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<P
     screen.flush().unwrap();
 
     paths
+}
+
+fn clear_area(
+    mut screen: &Stdout,
+    top: u16,
+    left: u16,
+    bottom: u16,
+    right: u16,
+) -> () {
+    // Precompute the spaces string for efficiency
+    let width = right - left + 1;
+    let spaces = " ".repeat(width as usize);
+
+    // Clear each row in the target area
+    for row in top..=bottom {
+        term::move_cursor( screen, left, row );
+        write!( screen, "{}", &spaces ).unwrap();
+    }
 }
