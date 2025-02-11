@@ -108,7 +108,7 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                     selected_index -= 1;
                 }
             }
-            ( 'l', _ ) => {
+            ( 'l', _ ) | ( _, 013 ) => {
                 if paths[selected_index].path_type == term::PathType::Dir {
                     path = paths[selected_index].path.clone();
                     paths =
@@ -123,8 +123,7 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                 handle::on_quit( &screen, term_size.cols );
                 break;
             }
-            _ => {
-            }
+            _ => { continue; }
         };
     }
 
