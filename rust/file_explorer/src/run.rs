@@ -82,7 +82,7 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
         term::move_cursor( &screen, MAIN_SECTION_X, 0 );
         screen.flush().unwrap();
 
-        match c {
+        match c, byte {
             'h' => {
                 path.pop();
                 paths =
@@ -124,7 +124,9 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                 break;
             }
             _ => {
-                continue;
+                match byte {
+                    _ => { continue; }
+                }
             }
         };
     }
