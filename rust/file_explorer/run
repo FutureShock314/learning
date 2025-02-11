@@ -1,4 +1,16 @@
-target_dir=$(cargo run --quiet)  # Run your Rust binary
-if [ -n "$target_dir" ]; then
-    cd "$target_dir"
+#!/bin/bash
+
+# Run the Rust program (writes to temp file)
+cargo run --quiet
+
+# Temp file path (must match Rust code)
+TEMP_FILE="${TMPDIR:-/tmp}/file_explorer"
+
+# Check if temp file exists
+if [[ -f "$TEMP_FILE" ]]; then
+    TARGET_DIR=$(<"$TEMP_FILE")
+    rm -f "$TEMP_FILE"
+    
+    # Use 'eval' to change directory in the *current* shell
+    eval "cd -- '$TARGET_DIR'"
 fi

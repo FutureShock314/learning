@@ -123,11 +123,16 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                 handle::on_quit( &screen, term_size.cols );
                 break;
             }
-            ( _, 013 ) => {             
-                term::exit_raw_mode( &screen );
-                term::show_cursor( &screen );
+            ( _, 013 ) => {
                 println!( "{}", paths[selected_index].path.display() );
-                return Ok(())
+                
+                let temp = std::env::temp_dir().join( "file_explorer" );
+                std::fs::write(
+                    temp,
+                    format!( "{}", paths[selected_index].path.display() )
+                ).unwrap();
+
+                break;
             }
             _ => { continue; }
         };
