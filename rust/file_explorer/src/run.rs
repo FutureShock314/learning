@@ -19,7 +19,7 @@ use crate::MAIN_SECTION_X;
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<_> = std::env::args().collect();
 
-    println!( "{:?}", args );
+    // println!( "{:?}", args );
 
     let term_size = term::get_term_size().unwrap();
 
@@ -49,7 +49,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     Err( "Bad terminal size".into() )
 }
 
-/// Actual run functiom, including main loop
+/// Actual run function, including main loop
 pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
     let stdin = stdin();
     let mut screen = stdout();
@@ -108,7 +108,7 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                     selected_index -= 1;
                 }
             }
-            ( 'l', _ ) | ( _, 013 ) => {
+            ( 'l', _ ) => {
                 if paths[selected_index].path_type == term::PathType::Dir {
                     path = paths[selected_index].path.clone();
                     paths =
@@ -122,6 +122,12 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
             ( 'q', _ ) => {
                 handle::on_quit( &screen, term_size.cols );
                 break;
+            }
+            ( _, 013 ) => {             
+                term::exit_raw_mode( &screen );
+                term::show_cursor( &screen );
+                println!( "{}", paths[selected_index].path.display() );
+                return Ok(())
             }
             _ => { continue; }
         };

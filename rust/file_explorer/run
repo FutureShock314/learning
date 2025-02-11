@@ -1,0 +1,4 @@
+target_dir=$(cargo run --quiet)  # Run your Rust binary
+if [ -n "$target_dir" ]; then
+    cd "$target_dir"
+fi
