@@ -82,8 +82,8 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
         term::move_cursor( &screen, MAIN_SECTION_X, 0 );
         screen.flush().unwrap();
 
-        match c, byte {
-            'h' => {
+        match ( c, byte ) {
+            ( 'h', _ ) => {
                 path.pop();
                 paths =
                     files::main_section_files( &screen, path.clone(), MAIN_SECTION_X )
@@ -92,7 +92,7 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                 handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
                 selected_index = 0;
             }
-            'j' => {
+            ( 'j', _ ) => {
                 if selected_index < path_count - 1 {
                     handle::select_down( &screen, &paths, MAIN_SECTION_X,
                         selected_index.try_into().unwrap()
@@ -100,7 +100,7 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                     selected_index += 1;
                 }
             }
-            'k' => {
+            ( 'k', _ ) => {
                 if selected_index > 0 {
                     handle::select_up( &screen, &paths, MAIN_SECTION_X,
                         selected_index.try_into().unwrap()
@@ -108,7 +108,7 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                     selected_index -= 1;
                 }
             }
-            'l' => {
+            ( 'l', _ ) => {
                 if paths[selected_index].path_type == term::PathType::Dir {
                     path = paths[selected_index].path.clone();
                     paths =
@@ -119,14 +119,11 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                     selected_index = 0;
                 }
             }
-            'q' => {
+            ( 'q', _ ) => {
                 handle::on_quit( &screen, term_size.cols );
                 break;
             }
             _ => {
-                match byte {
-                    _ => { continue; }
-                }
             }
         };
     }
