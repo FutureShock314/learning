@@ -8,6 +8,11 @@ use std::{
     // sync::{ Mutex, Arc },
     path::PathBuf
 };
+use crossterm::style::{
+    SetAttribute, Attribute,
+    SetBackgroundColor, Color, ResetColor,
+    Print
+};
 // use crate::debug;
 use crate::files;
 use crate::handle;
@@ -124,15 +129,28 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                 break;
             }
             ( _, 013 ) => {
-                println!( "{}", paths[selected_index].path.display() );
-                
-                let temp = std::env::temp_dir().join( "file_explorer" );
-                std::fs::write(
-                    temp,
-                    format!( "{}", paths[selected_index].path.display() )
-                ).unwrap();
+                if paths[selected_index].path.is_dir() {
+                    let temp = std::env::temp_dir().join( "file_explorer" );
+                    std::fs::write(
+                        temp,
+                        format!( "{}", paths[selected_index].path.display() )
+                    ).unwrap();
 
-                break;
+                    break;
+                } else {
+                    term::move_cursor( &screen, 0, term_size.cols - 1 );
+                    term::clear_line( &screen );
+                    // write!( screen, "Quitting..." ).unwrap();
+                    crossterm::execute!(
+                        &screen,
+                        SetBackgroundColor( Color::Red ),
+                        SetAttribute( Attribute::Bold ),
+                        Print( " Not a directory! " ),
+                        ResetColor,
+                        SetAttribute( Attribute::Reset )
+                    ).unwrap();
+                    screen.flush().unwrap();
+                }
             }
             _ => { continue; }
         };

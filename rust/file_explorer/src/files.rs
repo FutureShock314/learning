@@ -27,6 +27,9 @@ pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<P
 
     clear_area( screen, 0, x, term_size.rows - 1, term_size.cols - 1 );
 
+    term::move_cursor( screen, x, term_size.cols - 1 );
+    term::clear_line( screen );
+
     for path in dir {
         let path = PathData::new( path.unwrap().path() );
         match path.path_type {
