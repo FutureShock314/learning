@@ -1,4 +1,5 @@
 mod debug;
+mod error;
 mod files;
 mod handle;
 mod run;

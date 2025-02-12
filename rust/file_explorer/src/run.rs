@@ -140,7 +140,6 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                 } else {
                     term::move_cursor( &screen, 0, term_size.cols - 1 );
                     term::clear_line( &screen );
-                    // write!( screen, "Quitting..." ).unwrap();
                     crossterm::execute!(
                         &screen,
                         SetBackgroundColor( Color::Red ),
