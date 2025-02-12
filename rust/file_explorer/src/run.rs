@@ -128,7 +128,7 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                 handle::on_quit( &screen, term_size.cols );
                 break;
             }
-            ( _, 013 ) => {
+            ( _,  13 ) => {
                 if paths[selected_index].path.is_dir() {
                     let temp = std::env::temp_dir().join( "file_explorer" );
                     std::fs::write(

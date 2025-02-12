@@ -82,7 +82,7 @@ fn clear_area(
     left: u16,
     bottom: u16,
     right: u16,
-) -> () {
+) {
     // Precompute the spaces string for efficiency
     let width = right - left + 1;
     let spaces = " ".repeat(width as usize);
