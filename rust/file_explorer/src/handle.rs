@@ -5,7 +5,8 @@ use crossterm::style::{
     ResetColor, Color, Attribute, SetAttribute
 };
 use std::io::{ Stdout, Write, };
-use crate::term::{ self, PathData, };
+use crate::files::PathData;
+use crate::term;
 use crate::MAIN_SECTION_FRAC;
 
 fn fg( col: Color ) -> SetForegroundColor {

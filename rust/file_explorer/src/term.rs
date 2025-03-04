@@ -10,52 +10,10 @@ use crossterm::{
 };
 use std::io::{ self, Stdout, };
 
-#[ derive( PartialEq ) ]
-pub enum PathType {
-    File,
-    Dir,
-}
-
 #[ derive( Debug ) ]
 pub struct TermSize {
     pub cols: u16,
     pub rows: u16,
-}
-
-pub struct PathData {
-    pub path: std::path::PathBuf,
-    pub path_type: PathType,
-    pub col_1: style::Color,
-    pub col_2: style::Color,
-}
-
-impl PathData {
-    pub fn new( path: std::path::PathBuf ) -> PathData {
-        if path.is_dir() {
-            let path_type = PathType::Dir;
-            let col_1 = style::Color::Blue;
-            let col_2 = style::Color::Black;
-
-            PathData {
-                path,
-                path_type,
-                col_1,
-                col_2
-            }
-        } else {
-            let path_type = PathType::File;
-            // let col_1 = style::Color::Rgb { r: 255, g: 255, b: 255 };
-            let col_1 = style::Color::Grey;
-            let col_2 = style::Color::Black;
-
-            PathData {
-                path,
-                path_type,
-                col_1,
-                col_2
-            }
-        }
-    }
 }
 
 // !

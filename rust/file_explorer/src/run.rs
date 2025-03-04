@@ -1,12 +1,7 @@
 use std::{
-    self,
-    io::{
-        self,
-        Read, Write,
-        stdin, stdout
-    },
-    // sync::{ Mutex, Arc },
-    path::PathBuf
+    self, io::{
+        self, stdin, stdout, Read, Write
+    }, path::PathBuf
 };
 use crossterm::style::{
     SetAttribute, Attribute,
@@ -67,7 +62,7 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
     term::hide_cursor( &screen );
     
     let mut paths =
-        files::main_section_files( &screen, path.clone(), MAIN_SECTION_X );
+        files::files_section( &screen, path.clone(), MAIN_SECTION_X );
     let mut path_count = paths.len();
  
     handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
@@ -89,9 +84,14 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
 
         match ( c, byte ) {
             ( 'h', _ ) => {
-                path.pop();
+                let old_path = path.pop();
+                let old_path = files::PathData::new( old_path );
+                let old_index = paths.iter().position(
+                    | x | x == old_path
+                ).unwrap();
+
                 paths =
-                    files::main_section_files( &screen, path.clone(), MAIN_SECTION_X )
+                    files::files_section( &screen, path.clone(), MAIN_SECTION_X )
                 ;
                 path_count = paths.len();
                 handle::select( &screen, &paths, MAIN_SECTION_X, 0 );
@@ -114,10 +114,10 @@ pub fn _run( init_path: PathBuf ) -> Result<(), io::Error> {
                 }
             }
             ( 'l', _ ) => {
-                if paths[selected_index].path_type == term::PathType::Dir {
+                if paths[selected_index].path_type == files::PathType::Dir {
                     path = paths[selected_index].path.clone();
                     paths =
-                        files::main_section_files( &screen, path.clone(), MAIN_SECTION_X )
+                        files::files_section( &screen, path.clone(), MAIN_SECTION_X )
                     ;
                     path_count = paths.len();
                     handle::select( &screen, &paths, MAIN_SECTION_X, 0 );

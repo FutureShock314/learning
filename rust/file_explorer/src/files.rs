@@ -2,19 +2,63 @@ use std::io::{ Stdout, Write };
 use std::path::PathBuf;
 use crossterm::execute;
 use crossterm::style::{
+    self,
     Print,
     ResetColor,
     SetForegroundColor,
     Attribute, SetAttribute
 };
-use crate::term::{ self, PathData, PathType::{ Dir, File } };
+use crate::term;
 use crate::MAIN_SECTION_FRAC;
+
+#[ derive( PartialEq ) ]
+pub enum PathType {
+    File,
+    Dir,
+}
+
+pub struct PathData {
+    pub path: std::path::PathBuf,
+    pub path_type: PathType,
+    pub col_1: style::Color,
+    pub col_2: style::Color,
+}
+
+impl PathData {
+    pub fn new( path: std::path::PathBuf ) -> PathData {
+        if path.is_dir() {
+            let path_type = PathType::Dir;
+            let col_1 = style::Color::Blue;
+            let col_2 = style::Color::Black;
+
+            PathData {
+                path,
+                path_type,
+                col_1,
+                col_2
+            }
+        } else {
+            let path_type = PathType::File;
+            // let col_1 = style::Color::Rgb { r: 255, g: 255, b: 255 };
+            let col_1 = style::Color::Grey;
+            let col_2 = style::Color::Black;
+
+            PathData {
+                path,
+                path_type,
+                col_1,
+                col_2
+            }
+        }
+    }
+}
+
 
 fn path_name( path: PathBuf ) -> String {
     path.file_name().unwrap().to_str().unwrap().to_string()
 }
 
-pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<PathData> {
+pub fn files_section( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<PathData> {
     let term_size = term::get_term_size().unwrap();
     let cols = term_size.cols as f64;
     let width: usize = ( cols * MAIN_SECTION_FRAC ).floor() as usize;
@@ -33,8 +77,8 @@ pub fn main_section_files( mut screen: &Stdout, path: PathBuf, x: u16 ) -> Vec<P
     for path in dir {
         let path = PathData::new( path.unwrap().path() );
         match path.path_type {
-            Dir => { dirs.push( path ); }
-            File => { files.push( path ); }
+            PathType::Dir => { dirs.push( path ); }
+            PathType::File => { files.push( path ); }
         };
     }
 
